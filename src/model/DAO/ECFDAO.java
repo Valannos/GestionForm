@@ -51,6 +51,7 @@ public class ECFDAO implements DAO {
                     if (res.getInt("id_formation") == listForm.get(i).getId()) {
 
                         ECF ecf = new ECF(res.getInt("id"), res.getString("nom_ecf"), listForm.get(i));
+                    
                         listECF.add(ecf);
                     }
 

@@ -184,18 +184,34 @@ public class Gestion_formation {
                     }
 
                     break;
-                    
+
                 case "7":
-                    
-                    ResultatDAO RsltDAO = new ResultatDAO();
-                    List<Resultat> listRslt = RsltDAO.findAll();
-                    
-                    for (int i = 0; i < listRslt.size(); i++) {
+
+                    List<Resultat> listRslt = ResultatDAO.getAllResultsInFormation(listForm.get(choixForm));
+
+                    if (listRslt.isEmpty()) {
+
+                         System.out.println("Aucun stagiaire actuellement dans la formation");
                         
+                    } else {
+
+                        for (int i = 0; i < listRslt.size(); i++) {
+                            System.out.println("******************");
+                            System.out.println("Prénom/Nom : " + listRslt.get(i).getStg().getPrenom() + " " + listRslt.get(i).getStg().getNom());
+                            System.out.println("ECF : " + listRslt.get(i).getEcf().getNom());
+
+                            if (listRslt.get(i).isValide()) {
+
+                                System.out.println("ECF Validé");
+
+                            } else {
+                                System.out.println("ECF NON Validé");
+                            }
+                            System.out.println("******************");
+                        }
                     }
-                    
                     break;
-                    
+
                 default:
                     System.out.println(Color.ANSI_RED + "Saisie incorrecte" + Color.ANSI_RESET);
             }
