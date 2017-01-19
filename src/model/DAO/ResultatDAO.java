@@ -6,6 +6,7 @@
 package model.DAO;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -23,18 +24,10 @@ import model.Stagiaire;
  *
  * @author vanel
  */
-public class ResultatDAO implements DAO {
+public class ResultatDAO {
 
-    @Override
-    public List<Resultat> findAll() {
-
-        StagiaireDAO stgDAO = new StagiaireDAO();
-        ECFDAO ecfDAO = new ECFDAO();
-
-        List<ECF> listECF = ecfDAO.findAll();
-        System.out.println(listECF);
-        List<Stagiaire> listStg = stgDAO.findAll();
-        System.out.println(listStg);
+    public static List<Resultat> findAll() {
+  
         List<Resultat> listRslt = new ArrayList<>();
 
         Connection connect = DBConnect.gettingConnected();
@@ -44,34 +37,26 @@ public class ResultatDAO implements DAO {
 
             state = connect.createStatement();
 
-            String sql = ("SELECT * FROM `Resultat`");
+            String sql = ("SELECT r.validation, p.nom, p.prenom, s.code, f.nom_formation, f.id, ecf.id, ecf.nom_ecf FROM Resultat r INNER JOIN Stagiaire s ON s.code = r.id_stagiaire INNER JOIN ECF ecf ON ecf.id = r.id_ecf INNER JOIN Personne p ON p.id = s.id_personne INNER JOIN Formation f ON f.id = ecf.id_formation ");
 
             ResultSet res = state.executeQuery(sql);
 
             while (res.next()) {
+                Formation form = new Formation(res.getString("f.nom_formation"), res.getInt("f.id"));
 
-                for (int i = 0; i < listStg.size(); i++) {
+                ECF ecf = new ECF(res.getInt("ecf.id"), res.getString("ecf.nom_ecf"), form);
 
-                    if (listStg.get(i).getCodeStagiaire() == res.getInt("id_stagiaire")) {
+                Stagiaire stg = new Stagiaire(res.getInt("s.code"), res.getString("p.nom"), res.getString("p.prenom"));
 
-                        for (int j = 0; j < listECF.size(); j++) {
+                Resultat rslt;
 
-                            if (listECF.get(j).getId() == res.getInt("id_ecf")) {
+                if (res.getInt("r.validation") == 0) {
+                    rslt = new Resultat(false, ecf, stg);
+                    listRslt.add(rslt);
+                } else {
 
-                                if (res.getInt("validation") == 0) {
-                                    Resultat rslt = new Resultat(false, listECF.get(j), listStg.get(i));
-                                    listRslt.add(rslt);
-                                } else {
-
-                                    Resultat rslt = new Resultat(true, listECF.get(j), listStg.get(i));
-                                    listRslt.add(rslt);
-                                }
-
-                            }
-
-                        }
-                    }
-
+                    rslt = new Resultat(true, ecf, stg);
+                    listRslt.add(rslt);
                 }
 
             }
@@ -101,50 +86,42 @@ public class ResultatDAO implements DAO {
     public static List<Resultat> getAllResultsInFormation(Formation form) {
 
         List<Resultat> listRslt = new ArrayList<>();
-        StagiaireDAO stgDAO = new StagiaireDAO();
-        ECFDAO ecfDAO = new ECFDAO();
 
-        List<ECF> listECF = ecfDAO.findAll();
-        System.out.println(listECF);
-        List<Stagiaire> listStg = stgDAO.findAll();
-        System.out.println(listStg);
-
+       
+     
         Connection connect = DBConnect.gettingConnected();
 
-        Statement state = null;
+       
         try {
 
-            state = connect.createStatement();
+            String sql = ("SELECT r.validation, ecf.id, ecf.nom_ecf, s.code, p.nom, p.prenom FROM Resultat r INNER JOIN ECF ecf ON r.id_ecf = ecf.id INNER JOIN Formation f ON f.id = ecf.id_formation INNER JOIN Stagiaire s ON r.id_stagiaire = s.code INNER JOIN Personne p ON p.id = s.id_personne WHERE f.id = ? ");
 
-            String sql = ("SELECT * FROM `Resultat`");
+            PreparedStatement ps = connect.prepareStatement(sql);
+            ps.setInt(1, form.getId());
 
-            ResultSet res = state.executeQuery(sql);
+            ResultSet res = ps.executeQuery();
 
             while (res.next()) {
+                
+              
 
-                for (int i = 0; i < listStg.size(); i++) {
+                ECF ecf = new ECF(res.getInt("ecf.id"), res.getString("ecf.nom_ecf"), form);
 
-                    if (listStg.get(i).getCodeStagiaire() == res.getInt("id_stagiaire") && listStg.get(i).getForm().getId() == form.getId()) {
+                Stagiaire stg = new Stagiaire(res.getInt("s.code"), res.getString("p.nom"), res.getString("p.prenom"));
 
-                        for (int j = 0; j < listECF.size(); j++) {
+                Resultat rslt;
+                  if (res.getInt("r.validation") == 0) {
 
-                            if (listECF.get(j).getId() == res.getInt("id_ecf")) {
+                   
+                    rslt = new Resultat(false, ecf, stg);
+                    listRslt.add(rslt);
+                } else {
 
-                                if (res.getInt("validation") == 0) {
-                                    Resultat rslt = new Resultat(false, listECF.get(j), listStg.get(i));
-                                    listRslt.add(rslt);
-                                } else {
-
-                                    Resultat rslt = new Resultat(true, listECF.get(j), listStg.get(i));
-                                    listRslt.add(rslt);
-                                }
-
-                            }
-
-                        }
-                    }
-
+                    rslt = new Resultat(true, ecf, stg);
+                    listRslt.add(rslt);
                 }
+
+                
 
             }
 
@@ -156,7 +133,7 @@ public class ResultatDAO implements DAO {
 
                 try {
                     connect.close();
-                    state.close();
+
                 } catch (SQLException e) {
 
                     e.printStackTrace();

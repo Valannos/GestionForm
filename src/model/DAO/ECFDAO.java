@@ -20,42 +20,33 @@ import model.Formation;
  *
  * @author vanel
  */
-public class ECFDAO implements DAO {
+public class ECFDAO {
 
     /**
-     * 
+     *
      * @return A list of ECF objects
      */
-    
-    @Override
-    public List<ECF> findAll() {
+    public static List<ECF> findAll() {
 
         Connection connect = DBConnect.gettingConnected();
         List<ECF> listECF = new ArrayList<>();
-        FormationDAO formDAO = new FormationDAO();
-        List<Formation> listForm = formDAO.findAll();
 
         Statement state = null;
         try {
 
             state = connect.createStatement();
 
-            String sql = ("SELECT * FROM `ECF`");
+            String sql = ("SELECT ecf.id, ecf.nom_ecf, f.nom_formation, ecf.id_formation FROM ECF ecf INNER JOIN Formation f ON f.id = ecf.id_formation");
 
             ResultSet res = state.executeQuery(sql);
 
             while (res.next()) {
 
-                for (int i = 0; i < listForm.size(); i++) {
+                Formation form = new Formation(res.getString("f.nom_formation"), res.getInt("ecf.id_formation"));
 
-                    if (res.getInt("id_formation") == listForm.get(i).getId()) {
+                ECF ecf = new ECF(res.getInt("id"), res.getString("nom_ecf"), form);
 
-                        ECF ecf = new ECF(res.getInt("id"), res.getString("nom_ecf"), listForm.get(i));
-                    
-                        listECF.add(ecf);
-                    }
-
-                }
+                listECF.add(ecf);
 
             }
 

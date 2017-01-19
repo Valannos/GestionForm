@@ -22,43 +22,28 @@ import model.Stagiaire;
  *
  * @author vanel
  */
-public class StagiaireDAO implements DAO {
+public class StagiaireDAO {
 
-    @Override
-    public List<Stagiaire> findAll() {
+    public static List<Stagiaire> findAll() {
 
-        PersonneDAO persDAO = new PersonneDAO();
-        FormationDAO formDAO = new FormationDAO();
-        List<Personne> listPers = persDAO.findAll();
+        
         Connection connect = DBConnect.gettingConnected();
         List<Stagiaire> listStg = new ArrayList<>();
-        List<Formation> listForm = formDAO.findAll();
+     
 
         Statement state = null;
         try {
 
             state = connect.createStatement();
 
-            String sql = ("SELECT * FROM `Stagiaire`");
+            String sql = ("SELECT s.code, p.nom, p.prenom, f.id, f.nom_formation FROM Stagiaire s INNER JOIN Personne p ON p.id = s.id_personne INNER JOIN Formation f ON f.id = s.id_formation");
 
             ResultSet res = state.executeQuery(sql);
 
             while (res.next()) {
-                Stagiaire stg = null;
-                for (int i = 0; i < listPers.size(); i++) {
-
-                    if (listPers.get(i).getId() == res.getInt("id_personne")) {
-                        stg = new Stagiaire(res.getInt("code"), listPers.get(i).getNom(), listPers.get(i).getPrenom());
-                        for (int j = 0; j < listForm.size(); j++) {
-                            if (listForm.get(j).getId() == res.getInt("id_formation")) {
-
-                                stg.setForm(listForm.get(j));
-
-                            }
-                        }
-                    }
-                }
-
+                Stagiaire stg = new Stagiaire(res.getInt("s.code"), res.getString("p.nom"), res.getString("p.prenom"));
+                Formation form = new Formation(res.getString("f.nom"), res.getInt("f.id"));
+                stg.setForm(form);
                 listStg.add(stg);
             }
 
@@ -85,7 +70,7 @@ public class StagiaireDAO implements DAO {
 
     }
 
-    public boolean addStagiaireToFormation(Personne pers, Formation form) {
+    public static boolean addStagiaireToFormation(Personne pers, Formation form) {
 
         int id = 0;
         Connection connect = DBConnect.gettingConnected();
@@ -98,12 +83,12 @@ public class StagiaireDAO implements DAO {
 
             String sql = "INSERT INTO `Stagiaire` (id_personne, id_formation) VALUES ( ?, ?)";
 
-            PreparedStatement ps = connect.prepareStatement(sql);
-            ps.setInt(1, pers.getId());
-            ps.setInt(2, form.getId());
+            try (PreparedStatement ps = connect.prepareStatement(sql)) {
+                ps.setInt(1, pers.getId());
+                ps.setInt(2, form.getId());
 
-            ps.execute();
-            ps.close();
+                ps.execute();
+            }
 
         } catch (SQLException ex) {
             Logger.getLogger(StagiaireDAO.class.getName()).log(Level.SEVERE, null, ex);
@@ -122,12 +107,11 @@ public class StagiaireDAO implements DAO {
         return success;
     }
 
-    public List<Stagiaire> getStgByFormation(Formation form) {
+    public static List<Stagiaire> getStgByFormation(Formation form) {
 
-        FormationDAO formDao = new FormationDAO();
         List<Stagiaire> listStg = new ArrayList<>();
         Connection connection = DBConnect.gettingConnected();
-        int id = formDao.getFormationId(form);
+        int id = FormationDAO.getFormationId(form);
         //System.out.println(id);
 
         try {

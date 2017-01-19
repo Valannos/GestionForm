@@ -13,18 +13,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import model.Formation;
 import model.Personne;
 
 /**
  *
  * @author vanel
  */
-public class PersonneDAO implements DAO{
+public class PersonneDAO {
 
-    @Override
-    public List<Personne> findAll() {
-       Connection connect = DBConnect.gettingConnected();
+    public static List<Personne> findAll() {
+        Connection connect = DBConnect.gettingConnected();
         List<Personne> listPers = new ArrayList<>();
 
         Statement state = null;
@@ -64,10 +62,9 @@ public class PersonneDAO implements DAO{
 
         return listPers;
     }
-    
-    
-    public List<Personne> findAllNonStagiaire() {
-       Connection connect = DBConnect.gettingConnected();
+
+    public static List<Personne> findAllNonStagiaire() {
+        Connection connect = DBConnect.gettingConnected();
         List<Personne> listPers = new ArrayList<>();
 
         Statement state = null;
@@ -107,9 +104,5 @@ public class PersonneDAO implements DAO{
 
         return listPers;
     }
-    
 
-    
-    
-    
 }

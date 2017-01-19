@@ -23,10 +23,13 @@ import java.sql.Statement;
  *
  * @author vanel
  */
-public class FormationDAO implements DAO<Formation> {
-
-    @Override
-    public List<Formation> findAll() {
+public class FormationDAO {
+/**
+ * 
+ * @return List
+ */
+    
+    public static List<Formation> findAll() {
 
         Connection connect = DBConnect.gettingConnected();
         List<Formation> listForm = new ArrayList<>();
@@ -76,7 +79,7 @@ public class FormationDAO implements DAO<Formation> {
      * @return (int) id of formation received in parameters
      */
     
-    public int getFormationId(Formation form) {
+    public static int getFormationId(Formation form) {
 
         int id = 0;
         Connection connect = DBConnect.gettingConnected();

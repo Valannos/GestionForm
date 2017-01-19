@@ -13,13 +13,17 @@ public class ECF {
     
     private int id;
     private String nom;
+    private Formation formation;
    
 
     public ECF(int id, String nom, Formation formation) {
         this.id = id;
         this.nom = nom;
+        this.formation = formation;
      
     }
+
+ 
 
     public int getId() {
         return id;

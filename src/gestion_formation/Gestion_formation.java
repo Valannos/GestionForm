@@ -15,8 +15,6 @@ import java.io.FileOutputStream;
 
 import java.util.List;
 
-import java.util.ArrayList;
-
 import model.DAO.FormationDAO;
 import model.DAO.PersonneDAO;
 import model.DAO.ResultatDAO;
@@ -33,14 +31,53 @@ public class Gestion_formation {
     public static Scanner sc = new Scanner(System.in);
 
     /**
+     *
+     * @param listForm
+     * @param choixForm
+     */
+    public static void displaysMainMenu(List<Formation> listForm, int choixForm) {
+
+        System.out.println(Color.ANSI_GREEN + "******FORMATION " + listForm.get(choixForm).getNom() + "******" + Color.ANSI_RESET);
+
+        System.out.println(Color.ANSI_YELLOW + "1-Ajouter un stagiaire" + Color.ANSI_RESET);
+        System.out.println(Color.ANSI_BLUE + "2-Afficher la liste courante" + Color.ANSI_RESET);
+        System.out.println(Color.ANSI_RED + "3-Quitter" + Color.ANSI_RESET);
+        System.out.println(Color.ANSI_RED + "4-Choisir une autre formation" + Color.ANSI_RESET);
+        System.out.println(Color.ANSI_RED + "5-Voir tous les stagiaires" + Color.ANSI_RESET);
+        System.out.println(Color.ANSI_RED + "6-Retirer un stagiaire de la formation" + Color.ANSI_RESET);
+        System.out.println(Color.ANSI_BLUE + "7-Gérer les résultats" + Color.ANSI_RESET);
+        System.out.println(Color.ANSI_GREEN + "************" + Color.ANSI_RESET);
+
+    }
+
+    /**
+     *
+     * @param listStg
+     */
+    public static void displaysStagiaireList(List<Stagiaire> listStg) {
+
+        for (int i = 0; i < listStg.size(); i++) {
+
+            System.out.println("************");
+            System.out.println("Nom : " + listStg.get(i).getNom());
+            System.out.println("Prénom : " + listStg.get(i).getPrenom());
+            System.out.println("N° : " + Integer.toString(listStg.get(i).getCodeStagiaire()));
+            if (listStg.get(i).getForm() != null) {
+                System.out.println("Formation : " + listStg.get(i).getForm().getNom() + ".");
+            }
+
+            System.out.println("************");
+
+        }
+
+    }
+
+    /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
 
-        FormationDAO formDAO = new FormationDAO();
-        PersonneDAO persDAO = new PersonneDAO();
-        StagiaireDAO stgDAO = new StagiaireDAO();
-        List<Formation> listForm = formDAO.findAll();
+        List<Formation> listForm = FormationDAO.findAll();
         List<Personne> listPers;
         List<Stagiaire> listStg;
         String choice;
@@ -50,17 +87,7 @@ public class Gestion_formation {
 
         while (!quit) {
 
-            System.out.println(Color.ANSI_GREEN + "******FORMATION " + listForm.get(choixForm).getNom() + "******" + Color.ANSI_RESET);
-
-            System.out.println(Color.ANSI_YELLOW + "1-Ajouter un stagiaire" + Color.ANSI_RESET);
-            System.out.println(Color.ANSI_BLUE + "2-Afficher la liste courante" + Color.ANSI_RESET);
-            System.out.println(Color.ANSI_RED + "3-Quitter" + Color.ANSI_RESET);
-            System.out.println(Color.ANSI_RED + "4-Choisir une autre formation" + Color.ANSI_RESET);
-            System.out.println(Color.ANSI_RED + "5-Voir tous les stagiaires" + Color.ANSI_RESET);
-            System.out.println(Color.ANSI_RED + "6-Retirer un stagiaire de la formation" + Color.ANSI_RESET);
-            System.out.println(Color.ANSI_BLUE + "7-Gérer les résultats" + Color.ANSI_RESET);
-            System.out.println(Color.ANSI_GREEN + "************" + Color.ANSI_RESET);
-
+            displaysMainMenu(listForm, choixForm);
             choice = sc.next();
 
             switch (choice) {
@@ -71,7 +98,7 @@ public class Gestion_formation {
                     break;
 
                 case "1":
-                    listPers = persDAO.findAllNonStagiaire();
+                    listPers = PersonneDAO.findAllNonStagiaire();
 
                     if (listPers.isEmpty()) {
 
@@ -94,7 +121,7 @@ public class Gestion_formation {
                             if (Integer.parseInt(chx) == listPers.get(i).getId()) {
                                 Personne pers = new Personne(listPers.get(i).getNom(), listPers.get(i).getPrenom());
                                 pers.setId(listPers.get(i).getId());
-                                stgDAO.addStagiaireToFormation(pers, listForm.get(choixForm));
+                                StagiaireDAO.addStagiaireToFormation(pers, listForm.get(choixForm));
 
                                 System.out.println("Ajout confirmé.");
 
@@ -106,16 +133,8 @@ public class Gestion_formation {
 
                     break;
                 case "2":
-                    listStg = stgDAO.getStgByFormation(listForm.get(choixForm));
-                    for (int i = 0; i < listStg.size(); i++) {
-
-                        System.out.println("************");
-                        System.out.println("Nom : " + listStg.get(i).getNom());
-                        System.out.println("Prénom : " + listStg.get(i).getPrenom());
-                        System.out.println("Code : " + Integer.toString(listStg.get(i).getCodeStagiaire()));
-                        System.out.println("************");
-
-                    }
+                    listStg = StagiaireDAO.getStgByFormation(listForm.get(choixForm));
+                    displaysStagiaireList(listStg);
 
                     break;
                 /**
@@ -128,31 +147,17 @@ public class Gestion_formation {
                     break;
                 case "5":
 
-                    List<Stagiaire> allStg = stgDAO.findAll();
-                    for (int i = 0; i < allStg.size(); i++) {
-
-                        System.out.println("************");
-                        System.out.println("Nom : " + allStg.get(i).getNom());
-                        System.out.println("Prénom : " + allStg.get(i).getPrenom());
-                        System.out.println("N° : " + Integer.toString(allStg.get(i).getCodeStagiaire()));
-                        System.out.println("Formation : " + allStg.get(i).getForm().getNom() + ".");
-                        System.out.println("************");
-
-                    }
+                    List<Stagiaire> allStg = StagiaireDAO.findAll();
+                    displaysStagiaireList(allStg);
 
                     break;
                 case "6":
+                    System.out.println("Saisir le code du stagiaire à retirer de la formatrion " + listForm.get(choixForm).getNom() + ".");
+                    listStg = StagiaireDAO.getStgByFormation(listForm.get(choixForm));
 
-                    listStg = stgDAO.getStgByFormation(listForm.get(choixForm));
-                    for (int i = 0; i < listStg.size(); i++) {
+                    displaysStagiaireList(listStg);
+                    System.out.println("Saisir 0 pour quitter");
 
-                        System.out.println("************");
-                        System.out.println("Nom : " + listStg.get(i).getNom());
-                        System.out.println("Prénom : " + listStg.get(i).getPrenom());
-                        System.out.println("Code : " + Integer.toString(listStg.get(i).getCodeStagiaire()));
-                        System.out.println("************");
-
-                    }
                     boolean idValide;
                     int chxStg = 0;
                     do {
@@ -171,16 +176,23 @@ public class Gestion_formation {
                         }
 
                     } while (!idValide);
-                    for (int i = 0; i < listStg.size(); i++) {
 
-                        if (listStg.get(i).getCodeStagiaire() == chxStg) {
+                    if (chxStg == 0) {
 
-                            StagiaireDAO.RemoveStagiaire(listStg.get(i));
-                            listStg.remove(listStg.get(i));
-                            System.out.println("Stagiaire retiré de la formation");
-                            break;
+                        System.out.println("Aucun stagiaire n'a été retiré de la formation");
+
+                    } else {
+                        for (int i = 0; i < listStg.size(); i++) {
+
+                            if (listStg.get(i).getCodeStagiaire() == chxStg) {
+
+                                StagiaireDAO.RemoveStagiaire(listStg.get(i));
+                                listStg.remove(listStg.get(i));
+                                System.out.println("Stagiaire retiré de la formation");
+
+                            }
+
                         }
-
                     }
 
                     break;
@@ -191,8 +203,8 @@ public class Gestion_formation {
 
                     if (listRslt.isEmpty()) {
 
-                         System.out.println("Aucun stagiaire actuellement dans la formation");
-                        
+                        System.out.println("Aucun stagiaire actuellement dans la formation");
+
                     } else {
 
                         for (int i = 0; i < listRslt.size(); i++) {

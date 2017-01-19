@@ -32,6 +32,11 @@ public class Formation implements Serializable {
         return listeStagiaire;
     }
 
+    public Formation(String nom, int id) {
+        this.nom = nom;
+        this.id = id;
+    }
+
     public Formation(String nom) {
 
         this.nom = nom;
@@ -137,7 +142,7 @@ public class Formation implements Serializable {
 
     public static String chooseFormation() {
         FormationDAO formDAO = new FormationDAO();
-        
+
         List<Formation> listForm = formDAO.findAll();
         System.out.println(listForm.size());
 
@@ -150,7 +155,7 @@ public class Formation implements Serializable {
         }
 
         System.out.println("Chosisez une formation");
-        choice  = sc.next();
+        choice = sc.next();
 
         return choice;
     }

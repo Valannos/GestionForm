@@ -10,10 +10,11 @@ import java.util.List;
 /**
  *
  * @author vanel
+ * @param <T>
  */
-public interface DAO<T> {
+public  interface DAO<T> {
     
-    public List<T> findAll();
+    public  List<T> findAll();
    
     
     
