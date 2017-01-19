@@ -14,6 +14,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 
 import java.util.List;
+import javax.swing.JFrame;
 
 import model.DAO.FormationDAO;
 import model.DAO.PersonneDAO;
@@ -32,10 +33,37 @@ public class Gestion_formation {
 
     /**
      *
-     * @param listForm
-     * @param choixForm
      */
-    public static void displaysMainMenu(List<Formation> listForm, int choixForm) {
+    public static void displayWindow() {
+
+        JFrame win = new JFrame();
+       
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        win.setVisible(true);
+
+    }
+
+
+
+/**
+ *
+ * @param listForm
+ * @param choixForm
+ */
+public static void displaysMainMenu(List<Formation> listForm, int choixForm) {
 
         System.out.println(Color.ANSI_GREEN + "******FORMATION " + listForm.get(choixForm).getNom() + "******" + Color.ANSI_RESET);
 
@@ -74,16 +102,24 @@ public class Gestion_formation {
 
     /**
      * @param args the command line arguments
+     * 
      */
-    public static void main(String[] args) {
+    public static void main(String[] args)  {
 
         List<Formation> listForm = FormationDAO.findAll();
         List<Personne> listPers;
         List<Stagiaire> listStg;
+        displayWindow();
         String choice;
-
+        int choixForm = 0;
         Boolean quit = false;
-        int choixForm = Integer.parseInt(Formation.chooseFormation());
+        try {
+            choixForm = Integer.parseInt(Formation.chooseFormation());
+        } catch (IndexOutOfBoundsException e) {
+
+            System.out.println("Saisie incorrecte");
+
+        }
 
         while (!quit) {
 
@@ -137,9 +173,7 @@ public class Gestion_formation {
                     displaysStagiaireList(listStg);
 
                     break;
-                /**
-                 * DEV TOOLS -*******************
-                 */
+
                 case "4":
 
                     choixForm = Integer.parseInt(Formation.chooseFormation());
@@ -231,7 +265,7 @@ public class Gestion_formation {
         System.out.println(Color.ANSI_GREEN + "Kenavo !" + Color.ANSI_RESET);
     }
 
-    public static void readFile() {
+    /* public static void readFile() {
 
         File f = new File("test.txt");
 
@@ -293,6 +327,5 @@ public class Gestion_formation {
 
         }
 
-    }
-
+    }*/
 }
