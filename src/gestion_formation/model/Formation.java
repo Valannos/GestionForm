@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package model;
+package gestion_formation.model;
 
 import static gestion_formation.Gestion_formation.sc;
 import java.io.FileInputStream;
@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import model.DAO.FormationDAO;
+import gestion_formation.model.DAO.FormationDAO;
 
 /**
  *

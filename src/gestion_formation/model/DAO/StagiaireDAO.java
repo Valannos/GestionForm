@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package model.DAO;
+package gestion_formation.model.DAO;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -14,9 +14,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import model.Formation;
-import model.Personne;
-import model.Stagiaire;
+import gestion_formation.model.Formation;
+import gestion_formation.model.Personne;
+import gestion_formation.model.Stagiaire;
 
 /**
  *

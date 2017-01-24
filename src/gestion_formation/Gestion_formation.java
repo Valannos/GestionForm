@@ -6,22 +6,22 @@
 package gestion_formation;
 
 import java.util.Scanner;
-import model.Formation;
-
-import model.Stagiaire;
-import java.io.*;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
+import gestion_formation.model.Formation;
+import gestion_formation.model.Stagiaire;
 
 import java.util.List;
-import javax.swing.JFrame;
 
-import model.DAO.FormationDAO;
-import model.DAO.PersonneDAO;
-import model.DAO.ResultatDAO;
-import model.DAO.StagiaireDAO;
-import model.Personne;
-import model.Resultat;
+import gestion_formation.model.DAO.FormationDAO;
+import gestion_formation.model.DAO.PersonneDAO;
+import gestion_formation.model.DAO.ResultatDAO;
+import gestion_formation.model.DAO.StagiaireDAO;
+import gestion_formation.model.Personne;
+import gestion_formation.model.Resultat;
+import gestion_formation.swing.MainWindow;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 
 /**
  *
@@ -33,37 +33,10 @@ public class Gestion_formation {
 
     /**
      *
+     * @param listForm
+     * @param choixForm
      */
-    public static void displayWindow() {
-
-        JFrame win = new JFrame();
-       
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        win.setVisible(true);
-
-    }
-
-
-
-/**
- *
- * @param listForm
- * @param choixForm
- */
-public static void displaysMainMenu(List<Formation> listForm, int choixForm) {
+    public static void displaysMainMenu(List<Formation> listForm, int choixForm) {
 
         System.out.println(Color.ANSI_GREEN + "******FORMATION " + listForm.get(choixForm).getNom() + "******" + Color.ANSI_RESET);
 
@@ -102,14 +75,26 @@ public static void displaysMainMenu(List<Formation> listForm, int choixForm) {
 
     /**
      * @param args the command line arguments
-     * 
+     *
      */
-    public static void main(String[] args)  {
+    public static void main(String[] args) {
+
+        try {
+
+            UIManager.setLookAndFeel(
+                    UIManager.getCrossPlatformLookAndFeelClassName()
+            );
+
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException ex) {
+            Logger.getLogger(Gestion_formation.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        MainWindow win = new MainWindow();
+        win.setVisible(true);
 
         List<Formation> listForm = FormationDAO.findAll();
         List<Personne> listPers;
         List<Stagiaire> listStg;
-        displayWindow();
+
         String choice;
         int choixForm = 0;
         Boolean quit = false;

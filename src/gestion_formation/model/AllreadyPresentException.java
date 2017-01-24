@@ -1,4 +1,4 @@
-package model;
+package gestion_formation.model;
 
 import java.sql.SQLException;
 
