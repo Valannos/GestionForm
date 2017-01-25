@@ -6,16 +6,11 @@
 package gestion_formation.model;
 
 import static gestion_formation.Gestion_formation.sc;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import gestion_formation.model.DAO.FormationDAO;
+import java.util.Date;
 
 /**
  *
@@ -27,6 +22,30 @@ public class Formation implements Serializable {
     private String nom;
     private List<ECF> listECF;
     private int id;
+    private Date start;
+    private Date end;
+
+    public Formation(String nom, Date start, Date end) {
+        this.nom = nom;
+        this.start = start;
+        this.end = end;
+    }
+
+    public Date getStart() {
+        return start;
+    }
+
+    public void setStart(Date start) {
+        this.start = start;
+    }
+
+    public Date getEnd() {
+        return end;
+    }
+
+    public void setEnd(Date end) {
+        this.end = end;
+    }
 
     public List<Stagiaire> getListeStagiaire() {
         return listeStagiaire;

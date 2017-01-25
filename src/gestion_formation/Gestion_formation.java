@@ -17,7 +17,7 @@ import gestion_formation.model.DAO.ResultatDAO;
 import gestion_formation.model.DAO.StagiaireDAO;
 import gestion_formation.model.Personne;
 import gestion_formation.model.Resultat;
-import gestion_formation.swing.MainWindow;
+import gestion_formation.ui.MainWindow;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.UIManager;

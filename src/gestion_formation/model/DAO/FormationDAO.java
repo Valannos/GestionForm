@@ -5,30 +5,28 @@
  */
 package gestion_formation.model.DAO;
 
-import gestion_formation.Gestion_formation;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import gestion_formation.model.Formation;
 import java.sql.Statement;
+import java.sql.Timestamp;
 
 /**
  *
  * @author vanel
  */
 public class FormationDAO {
-/**
- * 
- * @return List
- */
-    
+
+    /**
+     *
+     * @return List
+     */
     public static List<Formation> findAll() {
 
         Connection connect = DBConnect.gettingConnected();
@@ -47,6 +45,8 @@ public class FormationDAO {
 
                 Formation form = new Formation(res.getString("nom_formation"));
                 form.setId(res.getInt("id"));
+                form.setStart(res.getDate("debut"));
+                form.setEnd(res.getDate("fin"));
                 listForm.add(form);
 
             }
@@ -74,19 +74,17 @@ public class FormationDAO {
     }
 
     /**
-     * 
+     *
      * @param form
      * @return (int) id of formation received in parameters
      */
-    
     public static int getFormationId(Formation form) {
 
         int id = 0;
         Connection connect = DBConnect.gettingConnected();
-        
 
         try {
-          
+
             String sql = ("SELECT id FROM `Formation` WHERE nom_formation = ?");
 
             PreparedStatement ps = connect.prepareStatement(sql);
@@ -101,8 +99,7 @@ public class FormationDAO {
 
             }
             ps.close();
-           
-            
+
         } catch (SQLException ex) {
             Logger.getLogger(FormationDAO.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
@@ -122,6 +119,39 @@ public class FormationDAO {
         }
 
         return id;
+    }
+
+    public static void addFormation(Formation form) {
+
+        Connection connect = DBConnect.gettingConnected();
+
+        String sql = "INSERT INTO Formation (nom_formation, debut, fin) VALUES (?, ?, ?)";
+
+        try {
+
+            PreparedStatement ps = connect.prepareStatement(sql);
+            ps.setString(1, form.getNom());
+
+            ps.setTimestamp(3, new Timestamp(form.getEnd().getTime()));
+            ps.setTimestamp(2, new Timestamp(form.getStart().getTime()));
+
+            ps.execute();
+
+        } catch (SQLException ex) {
+            Logger.getLogger(FormationDAO.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+
+            if (connect != null) {
+                try {
+                    connect.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(FormationDAO.class.getName()).log(Level.SEVERE, null, ex);
+
+                }
+            }
+
+        }
+
     }
 
 }

@@ -42,7 +42,7 @@ public class StagiaireDAO {
 
             while (res.next()) {
                 Stagiaire stg = new Stagiaire(res.getInt("s.code"), res.getString("p.nom"), res.getString("p.prenom"));
-                Formation form = new Formation(res.getString("f.nom"), res.getInt("f.id"));
+                Formation form = new Formation(res.getString("f.nom_formation"), res.getInt("f.id"));
                 stg.setForm(form);
                 listStg.add(stg);
             }
