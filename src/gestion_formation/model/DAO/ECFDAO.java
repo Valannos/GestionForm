@@ -101,4 +101,53 @@ public class ECFDAO {
         return true;
     }
     
+    
+    public static List<ECF> findAllinFormation(Formation form) {
+        
+        Connection connect = DBConnect.gettingConnected();
+        List<ECF> listECF = new ArrayList<>();
+        
+        PreparedStatement ps = null;
+        try {
+            
+            
+            
+            String sql = ("SELECT ecf.id, ecf.nom_ecf, ecf.id_formation FROM ECF ecf WHERE ecf.id_formation = ?");
+            ps = connect.prepareStatement(sql);
+            ps.setInt(1, form.getId());
+            ResultSet res = ps.executeQuery();
+            
+            while (res.next()) {
+                
+                
+                
+                ECF ecf = new ECF(res.getInt("id"), res.getString("nom_ecf"), form);
+                
+                listECF.add(ecf);
+                
+            }
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(FormationDAO.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            
+            if (connect != null) {
+                
+                try {
+                    connect.close();
+                    ps.close();
+                } catch (SQLException e) {
+                    
+                    e.printStackTrace();
+                    
+                }
+                
+            }
+            
+        }
+        
+        return listECF;
+        
+    }
+    
 }

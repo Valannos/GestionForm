@@ -5,19 +5,29 @@
  */
 package gestion_formation.ui;
 
+import gestion_formation.model.DAO.ECFDAO;
 import gestion_formation.model.DAO.FormationDAO;
+import gestion_formation.model.DAO.ResultatDAO;
+import gestion_formation.model.DAO.StagiaireDAO;
+import gestion_formation.model.ECF;
 import gestion_formation.model.Formation;
+import gestion_formation.model.Resultat;
+import gestion_formation.model.Stagiaire;
 import java.util.List;
+import javax.swing.DefaultListModel;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import javax.swing.table.AbstractTableModel;
 
 /**
  *
  * @author vanel
  */
 public class MainWindow extends javax.swing.JFrame {
+
+    StagiaireTableModel stgtblmod = new StagiaireTableModel();
+    DefaultListModel dlm = new DefaultListModel();
 
     /**
      * Creates new form MainWindow
@@ -27,14 +37,60 @@ public class MainWindow extends javax.swing.JFrame {
         this.setSize(500, 500);
         this.setLocationRelativeTo(null);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        
- 
-        
-        
-        
-  
 
         initComponents();
+        List<Formation> findAllForm = FormationDAO.findAll();
+        for (Formation form : findAllForm) {
+
+            jComboBox_formation.addItem(form);
+
+        }
+        jComboBox_formation.setSelectedIndex(-1);
+        jTable_Stagiaires.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                
+            
+
+                if (jTable_Stagiaires.getSelectedRow() > -1) {
+                    dlm.clear();
+                    Stagiaire stg = stgtblmod.getStagiaire(jTable_Stagiaires.getSelectedRow());
+
+                    jButton_edit_stagiaire.setEnabled(true);
+                    jButton_suppres_stagiaire.setEnabled(true);
+                    jList_ECF_From_Formation.setEnabled(true);
+                    List<ECF> ecf = ECFDAO.findAllinFormation(stg.getForm());
+                    for (int i = 0; i < ecf.size(); i++) {
+                        dlm.addElement(ecf.get(i));
+                    }
+                    
+                    jList_ECF_From_Formation.setModel(dlm);
+                    jList_ECF_From_Formation.setSelectedIndex(0);
+
+                }
+
+            }
+
+        });
+        jList_ECF_From_Formation.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+
+                if (jToggleButton_Valid_ECF.isEnabled()) {
+                    jToggleButton_Valid_ECF.setEnabled(false);
+                }
+
+                Stagiaire stg = stgtblmod.getStagiaire(jTable_Stagiaires.getSelectedRow());
+
+                List<Resultat> rslt = ResultatDAO.getStagiaireResultats(stg);
+
+//                if (!rslt.get().isValide()) {
+//                    jToggleButton_Valid_ECF.setEnabled(true);
+//                }
+
+            }
+        });
+
     }
 
     /**
@@ -57,7 +113,26 @@ public class MainWindow extends javax.swing.JFrame {
         JPanel_tab_Stagiaires = new javax.swing.JPanel();
         jScrollPane_Stagiaire = new javax.swing.JScrollPane();
         jTable_Stagiaires = new javax.swing.JTable();
-        jTabbedPane_Stagiaires = new javax.swing.JTabbedPane();
+        jPanel_Add_Stagiaire = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        label_formation = new javax.swing.JLabel();
+        jComboBox_formation = new javax.swing.JComboBox<>();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        jTextField_add_stagiaire_name = new javax.swing.JTextField();
+        jTextField_add_stagiaire_firstname = new javax.swing.JTextField();
+        jButton_Add_Stagiaire = new javax.swing.JButton();
+        jButton3 = new javax.swing.JButton();
+        jSplitPane1 = new javax.swing.JSplitPane();
+        jPanel2 = new javax.swing.JPanel();
+        jButton_edit_stagiaire = new javax.swing.JButton();
+        jButton_suppres_stagiaire = new javax.swing.JButton();
+        jLabel5 = new javax.swing.JLabel();
+        jPanel3 = new javax.swing.JPanel();
+        jLabel4 = new javax.swing.JLabel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jList_ECF_From_Formation = new javax.swing.JList();
+        jToggleButton_Valid_ECF = new javax.swing.JToggleButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenuItem_Add_Formation = new javax.swing.JMenuItem();
@@ -122,7 +197,7 @@ public class MainWindow extends javax.swing.JFrame {
         JPanel_Tab_Formations.setLayout(JPanel_Tab_FormationsLayout);
         JPanel_Tab_FormationsLayout.setHorizontalGroup(
             JPanel_Tab_FormationsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(JScrollPane_Formations, javax.swing.GroupLayout.DEFAULT_SIZE, 739, Short.MAX_VALUE)
+            .addComponent(JScrollPane_Formations, javax.swing.GroupLayout.DEFAULT_SIZE, 815, Short.MAX_VALUE)
             .addComponent(jPanel_Btns_Formations, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         JPanel_Tab_FormationsLayout.setVerticalGroup(
@@ -135,22 +210,185 @@ public class MainWindow extends javax.swing.JFrame {
 
         Tabs.addTab("Formation", JPanel_Tab_Formations);
 
-        jTable_Stagiaires.setModel(new StagiaireModel());
+        jTable_Stagiaires.setModel(stgtblmod);
         jScrollPane_Stagiaire.setViewportView(jTable_Stagiaires);
+
+        jLabel1.setText("Ajouter un stagiaire");
+
+        label_formation.setText("Formation :");
+
+        jComboBox_formation.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jComboBox_formationActionPerformed(evt);
+            }
+        });
+
+        jLabel2.setText("Nom : ");
+
+        jLabel3.setText("Prénom : ");
+
+        jButton_Add_Stagiaire.setText("Ajouter");
+        jButton_Add_Stagiaire.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_Add_StagiaireActionPerformed(evt);
+            }
+        });
+
+        jButton3.setText("Annuler");
+
+        javax.swing.GroupLayout jPanel_Add_StagiaireLayout = new javax.swing.GroupLayout(jPanel_Add_Stagiaire);
+        jPanel_Add_Stagiaire.setLayout(jPanel_Add_StagiaireLayout);
+        jPanel_Add_StagiaireLayout.setHorizontalGroup(
+            jPanel_Add_StagiaireLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel_Add_StagiaireLayout.createSequentialGroup()
+                .addComponent(jLabel1)
+                .addGap(0, 0, Short.MAX_VALUE))
+            .addGroup(jPanel_Add_StagiaireLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel_Add_StagiaireLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel_Add_StagiaireLayout.createSequentialGroup()
+                        .addGroup(jPanel_Add_StagiaireLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(label_formation)
+                            .addComponent(jLabel2)
+                            .addComponent(jLabel3))
+                        .addGap(37, 37, 37)
+                        .addGroup(jPanel_Add_StagiaireLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jTextField_add_stagiaire_firstname)
+                            .addComponent(jTextField_add_stagiaire_name)
+                            .addComponent(jComboBox_formation, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(42, 42, 42))
+                    .addGroup(jPanel_Add_StagiaireLayout.createSequentialGroup()
+                        .addGap(25, 25, 25)
+                        .addComponent(jButton_Add_Stagiaire)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jButton3)
+                        .addGap(76, 76, 76))))
+        );
+        jPanel_Add_StagiaireLayout.setVerticalGroup(
+            jPanel_Add_StagiaireLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel_Add_StagiaireLayout.createSequentialGroup()
+                .addGap(6, 6, 6)
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel_Add_StagiaireLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(label_formation)
+                    .addComponent(jComboBox_formation, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel_Add_StagiaireLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel2)
+                    .addComponent(jTextField_add_stagiaire_name, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel_Add_StagiaireLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel3)
+                    .addComponent(jTextField_add_stagiaire_firstname, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel_Add_StagiaireLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jButton_Add_Stagiaire)
+                    .addComponent(jButton3))
+                .addGap(0, 91, Short.MAX_VALUE))
+        );
+
+        jSplitPane1.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+
+        jButton_edit_stagiaire.setText("Editer fiche stagiaire");
+        jButton_edit_stagiaire.setEnabled(false);
+        jButton_edit_stagiaire.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_edit_stagiaireActionPerformed(evt);
+            }
+        });
+
+        jButton_suppres_stagiaire.setText("Supprimer stagiaire");
+        jButton_suppres_stagiaire.setEnabled(false);
+
+        jLabel5.setText("jLabel5");
+        jLabel5.setEnabled(false);
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jButton_suppres_stagiaire, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jButton_edit_stagiaire, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 68, Short.MAX_VALUE)
+                .addComponent(jButton_edit_stagiaire)
+                .addGap(18, 18, 18)
+                .addComponent(jButton_suppres_stagiaire)
+                .addGap(22, 22, 22))
+        );
+
+        jSplitPane1.setLeftComponent(jPanel2);
+
+        jLabel4.setText("Résultats ECF");
+        jLabel4.setEnabled(false);
+
+        jList_ECF_From_Formation.setModel(new javax.swing.AbstractListModel() {
+            String[] strings = { "Selectionner un stagiaire..." };
+            public int getSize() { return strings.length; }
+            public Object getElementAt(int i) { return strings[i]; }
+        });
+        jScrollPane2.setViewportView(jList_ECF_From_Formation);
+
+        jToggleButton_Valid_ECF.setText("Valider ECF");
+        jToggleButton_Valid_ECF.setEnabled(false);
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jLabel4)
+                    .addComponent(jScrollPane2)
+                    .addComponent(jToggleButton_Valid_ECF, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(455, Short.MAX_VALUE))
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel4)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jToggleButton_Valid_ECF)
+                .addContainerGap(27, Short.MAX_VALUE))
+        );
+
+        jSplitPane1.setRightComponent(jPanel3);
 
         javax.swing.GroupLayout JPanel_tab_StagiairesLayout = new javax.swing.GroupLayout(JPanel_tab_Stagiaires);
         JPanel_tab_Stagiaires.setLayout(JPanel_tab_StagiairesLayout);
         JPanel_tab_StagiairesLayout.setHorizontalGroup(
             JPanel_tab_StagiairesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane_Stagiaire, javax.swing.GroupLayout.DEFAULT_SIZE, 739, Short.MAX_VALUE)
-            .addComponent(jTabbedPane_Stagiaires)
+            .addGroup(JPanel_tab_StagiairesLayout.createSequentialGroup()
+                .addComponent(jScrollPane_Stagiaire, javax.swing.GroupLayout.PREFERRED_SIZE, 389, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel_Add_Stagiaire, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addComponent(jSplitPane1)
         );
         JPanel_tab_StagiairesLayout.setVerticalGroup(
             JPanel_tab_StagiairesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(JPanel_tab_StagiairesLayout.createSequentialGroup()
-                .addComponent(jScrollPane_Stagiaire, javax.swing.GroupLayout.PREFERRED_SIZE, 276, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jTabbedPane_Stagiaires, javax.swing.GroupLayout.PREFERRED_SIZE, 195, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(JPanel_tab_StagiairesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(JPanel_tab_StagiairesLayout.createSequentialGroup()
+                        .addComponent(jPanel_Add_Stagiaire, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(39, 39, 39))
+                    .addComponent(jScrollPane_Stagiaire, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jSplitPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 196, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         Tabs.addTab("Stagiaires", JPanel_tab_Stagiaires);
@@ -218,7 +456,7 @@ public class MainWindow extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-   
+
     private void JButton_Edit_FormationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JButton_Edit_FormationActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_JButton_Edit_FormationActionPerformed
@@ -243,7 +481,54 @@ public class MainWindow extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jMenuItem_Edit_FormationActionPerformed
 
-    
+    private void jComboBox_formationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox_formationActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jComboBox_formationActionPerformed
+
+    private void jButton_Add_StagiaireActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_Add_StagiaireActionPerformed
+
+        if (jComboBox_formation.getSelectedIndex() == -1 || jTextField_add_stagiaire_firstname.getText().isEmpty() || jTextField_add_stagiaire_name.getText().isEmpty()) {
+
+            JOptionPane.showMessageDialog(this, "Certains champs ne sont pas remplis", "Erreur", JOptionPane.ERROR_MESSAGE);
+
+        } else {
+
+            int input = JOptionPane.showConfirmDialog(this, "Confirmez vous l'ajout du stagiaire à la formation ?", "Confirmation", JOptionPane.YES_NO_OPTION);
+
+            if (input == JOptionPane.YES_OPTION) {
+
+                Stagiaire stg = new Stagiaire((Formation) jComboBox_formation.getSelectedItem(), jTextField_add_stagiaire_name.getText(), jTextField_add_stagiaire_firstname.getText());
+
+                if (StagiaireDAO.AddStagiaire(stg)) {
+
+                    JOptionPane.showMessageDialog(this, stg.getPrenom() + " " + stg.getNom() + " suit désormais la formation " + stg.getForm().getNom() + ".", "Information", JOptionPane.INFORMATION_MESSAGE);
+                    clearForm_jPanel_Add_Stagiaire();
+
+                } else if (input == JOptionPane.NO_OPTION) {
+
+                    clearForm_jPanel_Add_Stagiaire();
+
+                }
+
+            }
+
+        }
+
+
+    }//GEN-LAST:event_jButton_Add_StagiaireActionPerformed
+
+    private void jButton_edit_stagiaireActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_edit_stagiaireActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton_edit_stagiaireActionPerformed
+
+    private void clearForm_jPanel_Add_Stagiaire() {
+
+        jTextField_add_stagiaire_firstname.setText(null);
+        jTextField_add_stagiaire_name.setText(null);
+        jComboBox_formation.setSelectedIndex(-1);
+
+    }
+
     private void showFormationFormJDiag() {
 
         FormationForm formationForm = new FormationForm(this, true);
@@ -294,7 +579,18 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JTable JTable_Formations;
     private javax.swing.JTabbedPane Tabs;
     private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton_Add_Formation;
+    private javax.swing.JButton jButton_Add_Stagiaire;
+    private javax.swing.JButton jButton_edit_stagiaire;
+    private javax.swing.JButton jButton_suppres_stagiaire;
+    private javax.swing.JComboBox<Formation> jComboBox_formation;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JList jList_ECF_From_Formation;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu3;
@@ -303,11 +599,19 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem_Add_Formation;
     private javax.swing.JMenuItem jMenuItem_Edit_Formation;
     private javax.swing.JMenuItem jMenuItem_Quit;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel_Add_Stagiaire;
     private javax.swing.JPanel jPanel_Btns_Formations;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane_Stagiaire;
     private javax.swing.JPopupMenu.Separator jSeparator1;
-    private javax.swing.JTabbedPane jTabbedPane_Stagiaires;
+    private javax.swing.JSplitPane jSplitPane1;
     private javax.swing.JTable jTable_Stagiaires;
+    private javax.swing.JTextField jTextField_add_stagiaire_firstname;
+    private javax.swing.JTextField jTextField_add_stagiaire_name;
+    private javax.swing.JToggleButton jToggleButton_Valid_ECF;
+    private javax.swing.JLabel label_formation;
     // End of variables declaration//GEN-END:variables
 
 }

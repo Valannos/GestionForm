@@ -81,79 +81,7 @@ public class Formation implements Serializable {
         this.nom = nom;
     }
 
-    /* public void serializeFormation() {
-
-        ObjectOutputStream oos = null;
-
-        try {
-
-            FileOutputStream file = new FileOutputStream("data.ser");
-            oos = new ObjectOutputStream(file);
-            oos.writeObject(this);
-            oos.flush();
-
-        } catch (FileNotFoundException e) {
-
-            e.printStackTrace();
-
-        } catch (IOException a) {
-            a.printStackTrace();
-        } finally {
-
-            try {
-                if (oos != null) {
-                    oos.flush();
-                    oos.close();
-
-                }
-
-            } catch (IOException a) {
-                a.printStackTrace();
-
-            }
-
-        }
-
-    }
-
-    public static Formation unserializeFormation() {
-
-        Formation form = null;
-
-        ObjectInputStream ois = null;
-
-        try {
-
-            FileInputStream file = new FileInputStream("data.ser");
-            ois = new ObjectInputStream(file);
-            form = (Formation) ois.readObject();
-
-        } catch (FileNotFoundException fnfe) {
-
-            fnfe.printStackTrace();
-
-        } catch (IOException | ClassNotFoundException ioe) {
-
-            ioe.printStackTrace();
-
-        } finally {
-
-            try {
-                if (ois != null) {
-
-                    ois.close();
-
-                }
-            } catch (IOException ioe) {
-
-                ioe.printStackTrace();
-
-            }
-
-        }
-        
-        return form;
-    }*/
+  
     public Formation(String nom, List<ECF> listECF) {
         this.nom = nom;
         this.listECF = listECF;
@@ -178,5 +106,12 @@ public class Formation implements Serializable {
 
         return choice;
     }
+
+    @Override
+    public String toString() {
+        return nom ;
+    }
+    
+    
 
 }

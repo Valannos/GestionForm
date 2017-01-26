@@ -146,5 +146,103 @@ public class ResultatDAO {
         return listRslt;
 
     }
+    
+    public static List<Resultat> getStagiaireResultats(Stagiaire stg) {
+         List<Resultat> listRslt = new ArrayList<>();
+
+       
+     
+        Connection connect = DBConnect.gettingConnected();
+
+       
+        try {
+
+            String sql = ("SELECT r.id_ecf, r.validation, ecf.id, ecf.nom_ecf FROM Resultat r INNER JOIN ECF ecf ON ecf.id = r.id_ecf WHERE id_stagiaire = ?");
+
+            PreparedStatement ps = connect.prepareStatement(sql);
+            ps.setInt(1, stg.getCodeStagiaire());
+
+            ResultSet res = ps.executeQuery();
+
+            while (res.next()) {
+                
+              ECF ecf = new ECF(res.getInt("ecf.id"), res.getString("ecf.nom_ecf"), stg.getForm());
+               
+              Resultat rslt = new Resultat(res.getBoolean("r.validation"), ecf, stg);
+              
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(FormationDAO.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+
+            if (connect != null) {
+
+                try {
+                    connect.close();
+
+                } catch (SQLException e) {
+
+                    e.printStackTrace();
+
+                }
+
+            }
+
+        }
+
+        return listRslt;
+        
+        
+    }
+    
+    public static Resultat getResultatinECF(Stagiaire stg, ECF ecf) {
+         Resultat rslt = null;
+         Connection connect = DBConnect.gettingConnected();
+
+       
+        try {
+
+            String sql = ("SELECT validation FROM Resultat WHERE id_stagiaire = ? AND id_ecf = ?");
+
+            PreparedStatement ps = connect.prepareStatement(sql);
+            ps.setInt(1, stg.getCodeStagiaire());
+             ps.setInt(2, ecf.getId());
+
+            ResultSet res = ps.executeQuery();
+
+            while (res.next()) {
+                
+            
+               
+              rslt = new Resultat(res.getBoolean("validation"), ecf, stg);
+              
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(FormationDAO.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+
+            if (connect != null) {
+
+                try {
+                    connect.close();
+
+                } catch (SQLException e) {
+
+                    e.printStackTrace();
+
+                }
+
+            }
+
+        }
+
+        return rslt;
+        
+        
+        
+        
+    }
 
 }

@@ -26,10 +26,8 @@ public class StagiaireDAO {
 
     public static List<Stagiaire> findAll() {
 
-        
         Connection connect = DBConnect.gettingConnected();
         List<Stagiaire> listStg = new ArrayList<>();
-     
 
         Statement state = null;
         try {
@@ -188,6 +186,38 @@ public class StagiaireDAO {
 
         }
 
+    }
+
+    public static boolean AddStagiaire(Stagiaire stg) {
+        boolean success = false;
+        int id = PersonneDAO.addPersonne(new Personne(stg.getNom(), stg.getPrenom()));
+
+        Connection connect = DBConnect.gettingConnected();
+
+        String sql = "INSERT INTO Stagiaire (id_personne, id_formation) VALUES (?, ?)";
+        try {
+            PreparedStatement ps = connect.prepareStatement(sql);
+            ps.setInt(1, id);
+            ps.setInt(2, stg.getForm().getId());
+            ps.execute();
+            success = true;
+        } catch (SQLException ex) {
+            Logger.getLogger(StagiaireDAO.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+
+            if (connect != null) {
+
+                try {
+                    connect.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(PersonneDAO.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
+            }
+
+        }
+
+        return success;
     }
 
 }

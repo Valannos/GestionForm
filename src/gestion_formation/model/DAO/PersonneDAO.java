@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import gestion_formation.model.Personne;
+import java.sql.PreparedStatement;
 
 /**
  *
@@ -103,6 +104,38 @@ public class PersonneDAO {
         }
 
         return listPers;
+    }
+
+    public static int addPersonne(Personne p) {
+
+        Connection connect = DBConnect.gettingConnected();
+        int generatedId = 0;
+
+        String sql = "INSERT INTO Personne (nom, prenom, isStagiaire) VALUES (?, ?, 1)";
+        try {
+            PreparedStatement ps = connect.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            ps.setString(1, p.getNom());
+            ps.setString(2, p.getPrenom());
+            ps.execute();
+            ResultSet rs = ps.getGeneratedKeys();
+            rs.next();
+            generatedId = rs.getInt(1);
+        } catch (SQLException ex) {
+            Logger.getLogger(StagiaireDAO.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+
+            if (connect != null) {
+
+                try {
+                    connect.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(PersonneDAO.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
+            }
+
+        }
+        return generatedId;
     }
 
 }

@@ -41,6 +41,11 @@ public class ECF {
         this.nom = nom;
     }
 
+    @Override
+    public String toString() {
+        return nom;
+    }
+
    
     
     

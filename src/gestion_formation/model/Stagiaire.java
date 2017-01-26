@@ -30,6 +30,13 @@ public class Stagiaire extends Personne {
         super(nom, prenom);
         this.codeStagiaire = codeStagiaire;
     }
+
+    public Stagiaire(Formation form, String nom, String prenom) {
+        super(nom, prenom);
+        this.form = form;
+    }
+    
+    
     
   
     
