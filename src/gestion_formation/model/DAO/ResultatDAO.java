@@ -26,7 +26,7 @@ import gestion_formation.model.Stagiaire;
 public class ResultatDAO {
 
     public static List<Resultat> findAll() {
-  
+
         List<Resultat> listRslt = new ArrayList<>();
 
         Connection connect = DBConnect.gettingConnected();
@@ -86,11 +86,8 @@ public class ResultatDAO {
 
         List<Resultat> listRslt = new ArrayList<>();
 
-       
-     
         Connection connect = DBConnect.gettingConnected();
 
-       
         try {
 
             String sql = ("SELECT r.validation, ecf.id, ecf.nom_ecf, s.code, p.nom, p.prenom FROM Resultat r INNER JOIN ECF ecf ON r.id_ecf = ecf.id INNER JOIN Formation f ON f.id = ecf.id_formation INNER JOIN Stagiaire s ON r.id_stagiaire = s.code INNER JOIN Personne p ON p.id = s.id_personne WHERE f.id = ? ");
@@ -101,17 +98,14 @@ public class ResultatDAO {
             ResultSet res = ps.executeQuery();
 
             while (res.next()) {
-                
-              
 
                 ECF ecf = new ECF(res.getInt("ecf.id"), res.getString("ecf.nom_ecf"), form);
 
                 Stagiaire stg = new Stagiaire(res.getInt("s.code"), res.getString("p.nom"), res.getString("p.prenom"));
 
                 Resultat rslt;
-                  if (res.getInt("r.validation") == 0) {
+                if (res.getInt("r.validation") == 0) {
 
-                   
                     rslt = new Resultat(false, ecf, stg);
                     listRslt.add(rslt);
                 } else {
@@ -119,8 +113,6 @@ public class ResultatDAO {
                     rslt = new Resultat(true, ecf, stg);
                     listRslt.add(rslt);
                 }
-
-                
 
             }
 
@@ -146,15 +138,12 @@ public class ResultatDAO {
         return listRslt;
 
     }
-    
-    public static List<Resultat> getStagiaireResultats(Stagiaire stg) {
-         List<Resultat> listRslt = new ArrayList<>();
 
-       
-     
+    public static List<Resultat> getStagiaireResultats(Stagiaire stg) {
+        List<Resultat> listRslt = new ArrayList<>();
+
         Connection connect = DBConnect.gettingConnected();
 
-       
         try {
 
             String sql = ("SELECT r.id_ecf, r.validation, ecf.id, ecf.nom_ecf FROM Resultat r INNER JOIN ECF ecf ON ecf.id = r.id_ecf WHERE id_stagiaire = ?");
@@ -165,11 +154,11 @@ public class ResultatDAO {
             ResultSet res = ps.executeQuery();
 
             while (res.next()) {
-                
-              ECF ecf = new ECF(res.getInt("ecf.id"), res.getString("ecf.nom_ecf"), stg.getForm());
-               
-              Resultat rslt = new Resultat(res.getBoolean("r.validation"), ecf, stg);
-              
+
+                ECF ecf = new ECF(res.getInt("ecf.id"), res.getString("ecf.nom_ecf"), stg.getForm());
+
+                Resultat rslt = new Resultat(res.getBoolean("r.validation"), ecf, stg);
+
             }
 
         } catch (SQLException ex) {
@@ -192,31 +181,27 @@ public class ResultatDAO {
         }
 
         return listRslt;
-        
-        
-    }
-    
-    public static Resultat getResultatinECF(Stagiaire stg, ECF ecf) {
-         Resultat rslt = null;
-         Connection connect = DBConnect.gettingConnected();
 
-       
+    }
+
+    public static Resultat getResultatinECF(Stagiaire stg, ECF ecf) {
+        Resultat rslt = null;
+        Connection connect = DBConnect.gettingConnected();
+
         try {
 
             String sql = ("SELECT validation FROM Resultat WHERE id_stagiaire = ? AND id_ecf = ?");
 
             PreparedStatement ps = connect.prepareStatement(sql);
             ps.setInt(1, stg.getCodeStagiaire());
-             ps.setInt(2, ecf.getId());
+            ps.setInt(2, ecf.getId());
 
             ResultSet res = ps.executeQuery();
 
             while (res.next()) {
-                
-            
-               
-              rslt = new Resultat(res.getBoolean("validation"), ecf, stg);
-              
+
+                rslt = new Resultat(res.getBoolean("validation"), ecf, stg);
+
             }
 
         } catch (SQLException ex) {
@@ -239,10 +224,35 @@ public class ResultatDAO {
         }
 
         return rslt;
+
+    }
+
+    public static void switchResultToValidated(Resultat rslt) {
+
+        if (!rslt.isValide()) {
+            
+             Connection connect = DBConnect.gettingConnected();
+             
+             try {
+                 
+                 String sql = "UPDATE Resultat r SET r.validation = 1 WHERE r.id_stagiaire = ? AND r.id_ecf = ?"; 
+                 PreparedStatement ps = connect.prepareStatement(sql);
+                 ps.setInt(1, rslt.getStg().getCodeStagiaire());
+                 ps.setInt(2, rslt.getEcf().getId());
+                 
+                 ps.execute();
+                 
+                 
+                 
+             } catch (SQLException ex) {
+                Logger.getLogger(ResultatDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
+             
+            
+        }
         
-        
-        
-        
+       
+
     }
 
 }

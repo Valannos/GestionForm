@@ -21,22 +21,37 @@ public class ECFListModel extends DefaultListModel {
 
     public ECFListModel() {
         super();
-        this.ECFFromForm = ECFDAO.findAll();
+     
     }
 
     public ECFListModel(Formation form) {
 
         this.ECFFromForm = ECFDAO.findAllinFormation(form);
+        for (int i = 0; i < ECFFromForm.size(); i++) {
+            
+            this.addElement(ECFFromForm.get(i));
+            
+        }
     }
 
-    @Override
-    public void addElement(Object element) {
-        super.addElement(element); //To change body of generated methods, choose Tools | Templates.
+    public void addECFList(List<ECF> listECF) {
+       
+        for (int i = 0; i < listECF.size(); i++) {
+            
+            this.addElement(listECF.get(i));
+            
+        }
+        
     }
+
+    
+
 
     @Override
     public boolean isEmpty() {
         return super.isEmpty(); //To change body of generated methods, choose Tools | Templates.
     }
+    
+
 
 }
