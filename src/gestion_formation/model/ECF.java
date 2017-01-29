@@ -14,13 +14,37 @@ public class ECF {
     private int id;
     private String nom;
     private Formation formation;
+    private String description;
    
 
     public ECF(int id, String nom, Formation formation) {
         this.id = id;
         this.nom = nom;
         this.formation = formation;
+        
      
+    }
+
+    public ECF(String nom, Formation formation, String description) {
+        this.nom = nom;
+        this.formation = formation;
+        this.description = description;
+    }
+
+    public Formation getFormation() {
+        return formation;
+    }
+
+    public void setFormation(Formation formation) {
+        this.formation = formation;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
  

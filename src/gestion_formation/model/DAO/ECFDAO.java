@@ -74,15 +74,16 @@ public class ECFDAO {
         
     }
     
-    public static boolean addECFToFormation(Formation form, String nom) {
+    public static boolean addECFToFormation(ECF ecf) {
         
         Connection connection = DBConnect.gettingConnected();
-        String sql = "INSERT INTO ECF (id_formation, nom_ecf) VALUES (?, ?)";
+        String sql = "INSERT INTO ECF (id_formation, nom_ecf, description) VALUES (?, ?, ?)";
         
         try {
             PreparedStatement ps = connection.prepareStatement(sql);
-            ps.setInt(1, form.getId());
-            ps.setString(2, nom);
+            ps.setInt(1, ecf.getFormation().getId());
+            ps.setString(2, ecf.getNom());
+            ps.setString(3, ecf.getDescription());
             ps.execute();
             
             

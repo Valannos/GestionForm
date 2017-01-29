@@ -63,4 +63,10 @@ public class FormationModel extends AbstractTableModel {
         }
 
     }
+    
+    public Formation getFormation(int index) {
+        
+        
+        return allForms.get(index);
+    }
 }

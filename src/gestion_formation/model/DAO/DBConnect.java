@@ -17,12 +17,19 @@ import java.sql.SQLException;
 /**
  *
  * @author vanel
+ * 
  */
 public class DBConnect {
 
     final static private String url = "jdbc:mysql://localhost/Gestion_Formation";
     final static private String login = "root";
-    final static String password = "admin";
+    final static String password = "";
+    
+    
+    /**
+     * 
+     * @return Connection instance 
+     */
 
     public static Connection gettingConnected() {
 

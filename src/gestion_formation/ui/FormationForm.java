@@ -44,8 +44,6 @@ public class FormationForm extends javax.swing.JDialog {
         jXDatePicker_StartingDate = new org.jdesktop.swingx.JXDatePicker();
         jLabel_EndingDate = new javax.swing.JLabel();
         jXDatePicker_EndingDate = new org.jdesktop.swingx.JXDatePicker();
-        jLabel_ECF_Spinner = new javax.swing.JLabel();
-        jSpinner_ECF_Number = new javax.swing.JSpinner();
         jPanel2 = new javax.swing.JPanel();
         jButton_FormFormation_OK = new javax.swing.JButton();
         jButton_FormFormation_Cancel = new javax.swing.JButton();
@@ -66,8 +64,6 @@ public class FormationForm extends javax.swing.JDialog {
 
         jLabel_EndingDate.setText("Date de fin : ");
 
-        jLabel_ECF_Spinner.setText("Nombre d'ECF : ");
-
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -78,21 +74,15 @@ public class FormationForm extends javax.swing.JDialog {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel_FormName)
-                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(jLabel_EndingDate)
-                                .addComponent(jLabel_StartingDate, javax.swing.GroupLayout.Alignment.TRAILING)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jXDatePicker_StartingDate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jXDatePicker_EndingDate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel_ECF_Spinner)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jSpinner_ECF_Number, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(jLabel_FormName)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jLabel_EndingDate)
+                        .addComponent(jLabel_StartingDate, javax.swing.GroupLayout.Alignment.TRAILING)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jXDatePicker_StartingDate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jXDatePicker_EndingDate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -111,11 +101,7 @@ public class FormationForm extends javax.swing.JDialog {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jXDatePicker_EndingDate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel_EndingDate))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel_ECF_Spinner)
-                    .addComponent(jSpinner_ECF_Number, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(0, 20, Short.MAX_VALUE))
+                .addGap(0, 12, Short.MAX_VALUE))
         );
 
         jButton_FormFormation_OK.setText("OK");
@@ -189,8 +175,10 @@ public class FormationForm extends javax.swing.JDialog {
             
         } else {
             
+            
             FormationDAO.addFormation(form);
-            JOptionPane.showMessageDialog(this, "Formation ajoutée avec succès", "Formation", JOptionPane.INFORMATION_MESSAGE);
+            
+            JOptionPane.showMessageDialog(this, "Formation ajoutée avec succès, ajoutez les ECF avant d'inscrire les stagiaires", "Formation", JOptionPane.INFORMATION_MESSAGE);
             this.dispose();
             
         }
@@ -245,14 +233,12 @@ public class FormationForm extends javax.swing.JDialog {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton_FormFormation_Cancel;
     private javax.swing.JButton jButton_FormFormation_OK;
-    private javax.swing.JLabel jLabel_ECF_Spinner;
     private javax.swing.JLabel jLabel_EndingDate;
     private javax.swing.JLabel jLabel_FormName;
     private javax.swing.JLabel jLabel_StartingDate;
     private javax.swing.JLabel jLabel_Title;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JSpinner jSpinner_ECF_Number;
     private javax.swing.JTextField jTextField1;
     private org.jdesktop.swingx.JXDatePicker jXDatePicker_EndingDate;
     private org.jdesktop.swingx.JXDatePicker jXDatePicker_StartingDate;

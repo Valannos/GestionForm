@@ -57,26 +57,17 @@
               <Group type="102" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Group type="102" attributes="0">
-                          <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="jLabel_FormName" min="-2" max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="jLabel_EndingDate" alignment="0" min="-2" max="-2" attributes="0"/>
-                                  <Component id="jLabel_StartingDate" alignment="1" min="-2" max="-2" attributes="0"/>
-                              </Group>
-                          </Group>
-                          <EmptySpace max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="jTextField1" min="-2" pref="161" max="-2" attributes="0"/>
-                              <Component id="jXDatePicker_StartingDate" min="-2" max="-2" attributes="0"/>
-                              <Component id="jXDatePicker_EndingDate" alignment="0" min="-2" max="-2" attributes="0"/>
-                          </Group>
+                      <Component id="jLabel_FormName" min="-2" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="jLabel_EndingDate" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="jLabel_StartingDate" alignment="1" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <Group type="102" alignment="0" attributes="0">
-                          <Component id="jLabel_ECF_Spinner" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace max="-2" attributes="0"/>
-                          <Component id="jSpinner_ECF_Number" min="-2" pref="57" max="-2" attributes="0"/>
-                      </Group>
+                  </Group>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Component id="jTextField1" min="-2" pref="161" max="-2" attributes="0"/>
+                      <Component id="jXDatePicker_StartingDate" min="-2" max="-2" attributes="0"/>
+                      <Component id="jXDatePicker_EndingDate" alignment="0" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="32767" attributes="0"/>
               </Group>
@@ -101,12 +92,7 @@
                       <Component id="jXDatePicker_EndingDate" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="jLabel_EndingDate" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <EmptySpace type="separate" max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="jLabel_ECF_Spinner" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="jSpinner_ECF_Number" alignment="3" min="-2" pref="26" max="-2" attributes="0"/>
-                  </Group>
-                  <EmptySpace min="0" pref="20" max="32767" attributes="0"/>
+                  <EmptySpace min="0" pref="12" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -140,13 +126,6 @@
           </Properties>
         </Component>
         <Component class="org.jdesktop.swingx.JXDatePicker" name="jXDatePicker_EndingDate">
-        </Component>
-        <Component class="javax.swing.JLabel" name="jLabel_ECF_Spinner">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="Nombre d&apos;ECF : "/>
-          </Properties>
-        </Component>
-        <Component class="javax.swing.JSpinner" name="jSpinner_ECF_Number">
         </Component>
       </SubComponents>
     </Container>

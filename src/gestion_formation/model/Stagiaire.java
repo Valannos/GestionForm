@@ -57,17 +57,7 @@ public class Stagiaire extends Personne {
         return codeStagiaire;
     }
 
-    public void setCodeStagiaire(int codeStagiaire) {
-
-        while (codeStagiaire <= 0) {
-
-            System.out.print("Numéro stagiaire invalide, nouvelle tentative : ");
-            codeStagiaire = Gestion_formation.sc.nextInt();
-
-        }
-
-        this.codeStagiaire = codeStagiaire;
-    }
+   
 
     public List<ECF> getListECF() {
         return listECF;

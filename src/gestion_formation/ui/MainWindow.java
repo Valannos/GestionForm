@@ -30,6 +30,8 @@ public class MainWindow extends javax.swing.JFrame {
 
     StagiaireTableModel stgtblmod = new StagiaireTableModel();
     ECFListModel dlm = new ECFListModel();
+    Formation selectedFormation;
+    FormationModel formModel = new FormationModel();
 
     /**
      * Creates new form MainWindow
@@ -105,18 +107,34 @@ public class MainWindow extends javax.swing.JFrame {
 
                     Stagiaire stg = stgtblmod.getStagiaire(jTable_Stagiaires.getSelectedRow());
 
-            
-
                     Resultat rslt = ResultatDAO.getResultatinECF(stg, (ECF) jList_ECF_From_Formation.getSelectedValue());
 
                     ResultatDAO.switchResultToValidated(rslt);
-                    
+
                     jToggleButton_Valid_ECF.setEnabled(false);
 
                 }
             }
         });
+        JTable_Formations.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                if (JTable_Formations.getSelectedRow() > -1) {
+                    selectedFormation = formModel.getFormation(JTable_Formations.getSelectedRow());
 
+                    dlm.clear();
+
+                    jList_ECF_From_Formation.setEnabled(true);
+                    List<ECF> ecf = ECFDAO.findAllinFormation(selectedFormation);
+                    dlm.addECFList(ecf);
+                    jList_ECF_From_Formation.setSelectedIndex(-1);
+
+                    jList_ECF_formations_tab.setModel(dlm);
+                    jList_ECF_formations_tab.setEnabled(true);
+                }
+
+            }
+        });
     }
 
     /**
@@ -136,6 +154,11 @@ public class MainWindow extends javax.swing.JFrame {
         JButton_Edit_Formation = new javax.swing.JButton();
         jButton_Add_Formation = new javax.swing.JButton();
         jButton1 = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
+        jScroll_ECF = new javax.swing.JScrollPane();
+        jList_ECF_formations_tab = new javax.swing.JList<>();
+        jPanel_ECF_Description = new javax.swing.JPanel();
+        jTextField1 = new javax.swing.JTextField();
         JPanel_tab_Stagiaires = new javax.swing.JPanel();
         jScrollPane_Stagiaire = new javax.swing.JScrollPane();
         jTable_Stagiaires = new javax.swing.JTable();
@@ -171,7 +194,7 @@ public class MainWindow extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        JTable_Formations.setModel(new FormationModel());
+        JTable_Formations.setModel(formModel);
         JTable_Formations.addComponentListener(new java.awt.event.ComponentAdapter() {
             public void componentShown(java.awt.event.ComponentEvent evt) {
                 JTable_FormationsComponentShown(evt);
@@ -194,6 +217,13 @@ public class MainWindow extends javax.swing.JFrame {
         });
 
         jButton1.setText("Ajouter un ECF");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
+        jButton2.setText("Editer un ECF");
 
         javax.swing.GroupLayout jPanel_Btns_FormationsLayout = new javax.swing.GroupLayout(jPanel_Btns_Formations);
         jPanel_Btns_Formations.setLayout(jPanel_Btns_FormationsLayout);
@@ -206,7 +236,9 @@ public class MainWindow extends javax.swing.JFrame {
                 .addComponent(JButton_Edit_Formation)
                 .addGap(18, 18, 18)
                 .addComponent(jButton1)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addComponent(jButton2)
+                .addContainerGap(294, Short.MAX_VALUE))
         );
         jPanel_Btns_FormationsLayout.setVerticalGroup(
             jPanel_Btns_FormationsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -215,26 +247,60 @@ public class MainWindow extends javax.swing.JFrame {
                 .addGroup(jPanel_Btns_FormationsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(JButton_Edit_Formation)
                     .addComponent(jButton_Add_Formation)
-                    .addComponent(jButton1))
+                    .addComponent(jButton1)
+                    .addComponent(jButton2))
                 .addContainerGap())
+        );
+
+        jList_ECF_formations_tab.setModel(new javax.swing.AbstractListModel<String>() {
+            String[] strings = { "Selectionner une formation" };
+            public int getSize() { return strings.length; }
+            public String getElementAt(int i) { return strings[i]; }
+        });
+        jScroll_ECF.setViewportView(jList_ECF_formations_tab);
+
+        jTextField1.setEditable(false);
+        jTextField1.setToolTipText("");
+        jTextField1.setEnabled(false);
+
+        javax.swing.GroupLayout jPanel_ECF_DescriptionLayout = new javax.swing.GroupLayout(jPanel_ECF_Description);
+        jPanel_ECF_Description.setLayout(jPanel_ECF_DescriptionLayout);
+        jPanel_ECF_DescriptionLayout.setHorizontalGroup(
+            jPanel_ECF_DescriptionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jTextField1)
+        );
+        jPanel_ECF_DescriptionLayout.setVerticalGroup(
+            jPanel_ECF_DescriptionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jTextField1, javax.swing.GroupLayout.Alignment.TRAILING)
         );
 
         javax.swing.GroupLayout JPanel_Tab_FormationsLayout = new javax.swing.GroupLayout(JPanel_Tab_Formations);
         JPanel_Tab_Formations.setLayout(JPanel_Tab_FormationsLayout);
         JPanel_Tab_FormationsLayout.setHorizontalGroup(
             JPanel_Tab_FormationsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(JScrollPane_Formations, javax.swing.GroupLayout.DEFAULT_SIZE, 815, Short.MAX_VALUE)
             .addComponent(jPanel_Btns_Formations, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(JPanel_Tab_FormationsLayout.createSequentialGroup()
+                .addComponent(JScrollPane_Formations, javax.swing.GroupLayout.PREFERRED_SIZE, 350, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(JPanel_Tab_FormationsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScroll_ECF)
+                    .addComponent(jPanel_ECF_Description, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
         JPanel_Tab_FormationsLayout.setVerticalGroup(
             JPanel_Tab_FormationsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(JPanel_Tab_FormationsLayout.createSequentialGroup()
-                .addComponent(JScrollPane_Formations, javax.swing.GroupLayout.PREFERRED_SIZE, 390, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(JPanel_Tab_FormationsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(JScrollPane_Formations, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(JPanel_Tab_FormationsLayout.createSequentialGroup()
+                        .addComponent(jScroll_ECF, javax.swing.GroupLayout.PREFERRED_SIZE, 231, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jPanel_ECF_Description, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel_Btns_Formations, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
-        Tabs.addTab("Formation", JPanel_Tab_Formations);
+        Tabs.addTab("Formations", JPanel_Tab_Formations);
 
         jTable_Stagiaires.setModel(stgtblmod);
         jScrollPane_Stagiaire.setViewportView(jTable_Stagiaires);
@@ -513,7 +579,17 @@ public class MainWindow extends javax.swing.JFrame {
 
             JOptionPane.showMessageDialog(this, "Certains champs ne sont pas remplis", "Erreur", JOptionPane.ERROR_MESSAGE);
 
+        } else if (ECFDAO.findAllinFormation((Formation) jComboBox_formation.getSelectedItem()).isEmpty()) {
+
+            JOptionPane.showMessageDialog(this, "La formation ne contient pas d'ECF", "Erreur", JOptionPane.ERROR_MESSAGE);
+
         } else {
+
+            if (StagiaireDAO.getStgByFormation((Formation) jComboBox_formation.getSelectedItem()).isEmpty()) {
+
+                JOptionPane.showMessageDialog(this, "Attention ! Une fois le premier stagiaire ajouté, le nombre d'ECF ne sera plus modifiable", "Ajout d'un stagiaire", JOptionPane.WARNING_MESSAGE);
+
+            }
 
             int input = JOptionPane.showConfirmDialog(this, "Confirmez vous l'ajout du stagiaire à la formation ?", "Confirmation", JOptionPane.YES_NO_OPTION);
 
@@ -542,6 +618,13 @@ public class MainWindow extends javax.swing.JFrame {
     private void jButton_edit_stagiaireActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_edit_stagiaireActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jButton_edit_stagiaireActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        JOptionPane.showMessageDialog(this, "Une fois le premier stagiaire ajouté, il ne sera plus possible de rajouter des ECF", "Avertissement", JOptionPane.WARNING_MESSAGE);
+        ECFForm ecfform = new ECFForm(this, true, selectedFormation);
+        ecfform.setVisible(true);
+
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     private void clearForm_jPanel_Add_Stagiaire() {
 
@@ -601,6 +684,7 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JTable JTable_Formations;
     private javax.swing.JTabbedPane Tabs;
     private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton_Add_Formation;
     private javax.swing.JButton jButton_Add_Stagiaire;
@@ -613,6 +697,7 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JList jList_ECF_From_Formation;
+    private javax.swing.JList<String> jList_ECF_formations_tab;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu3;
@@ -623,13 +708,16 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem_Quit;
     private javax.swing.JPanel jPanel_Add_Stagiaire;
     private javax.swing.JPanel jPanel_Btns_Formations;
+    private javax.swing.JPanel jPanel_ECF_Description;
     private javax.swing.JPanel jPanel_ECF_handler;
     private javax.swing.JPanel jPanel_Stg_Editor;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane_Stagiaire;
+    private javax.swing.JScrollPane jScroll_ECF;
     private javax.swing.JPopupMenu.Separator jSeparator1;
     private javax.swing.JSplitPane jSplitPane_Stg_Manager;
     private javax.swing.JTable jTable_Stagiaires;
+    private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTextField_add_stagiaire_firstname;
     private javax.swing.JTextField jTextField_add_stagiaire_name;
     private javax.swing.JToggleButton jToggleButton_Valid_ECF;

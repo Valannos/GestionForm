@@ -5,11 +5,10 @@
  */
 package gestion_formation.model;
 
-import static gestion_formation.Gestion_formation.sc;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.io.Serializable;
-import gestion_formation.model.DAO.FormationDAO;
 import java.util.Date;
 
 /**
@@ -87,25 +86,7 @@ public class Formation implements Serializable {
         this.listECF = listECF;
     }
 
-    public static String chooseFormation() {
-        FormationDAO formDAO = new FormationDAO();
-
-        List<Formation> listForm = formDAO.findAll();
-        System.out.println(listForm.size());
-
-        String choice;
-
-        for (int i = 0; i < listForm.size(); i++) {
-
-            System.out.println(i + "-" + listForm.get(i).getNom());
-
-        }
-
-        System.out.println("Chosisez une formation");
-        choice = sc.next();
-
-        return choice;
-    }
+    
 
     @Override
     public String toString() {

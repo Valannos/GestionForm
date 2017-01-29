@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.5.4.1deb2ubuntu2
--- http://www.phpmyadmin.net
+-- version 4.6.4
+-- https://www.phpmyadmin.net/
 --
--- Client :  localhost
--- Généré le :  Ven 27 Janvier 2017 à 11:45
--- Version du serveur :  5.7.17-0ubuntu0.16.04.1
--- Version de PHP :  7.0.13-0ubuntu0.16.04.1
+-- Client :  127.0.0.1
+-- Généré le :  Dim 29 Janvier 2017 à 14:50
+-- Version du serveur :  5.7.14
+-- Version de PHP :  5.6.25
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -17,28 +17,29 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Base de données :  `Gestion_Formation`
+-- Base de données :  `gestion_formation`
 --
 
 -- --------------------------------------------------------
 
 --
--- Structure de la table `ECF`
+-- Structure de la table `ecf`
 --
 
-CREATE TABLE `ECF` (
+CREATE TABLE `ecf` (
   `id` int(11) NOT NULL,
   `id_formation` int(11) NOT NULL,
-  `nom_ecf` varchar(255) NOT NULL
+  `nom_ecf` varchar(255) NOT NULL,
+  `description` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
 --
--- Structure de la table `Formation`
+-- Structure de la table `formation`
 --
 
-CREATE TABLE `Formation` (
+CREATE TABLE `formation` (
   `id` int(11) NOT NULL,
   `nom_formation` varchar(255) NOT NULL,
   `debut` date DEFAULT NULL,
@@ -48,10 +49,10 @@ CREATE TABLE `Formation` (
 -- --------------------------------------------------------
 
 --
--- Structure de la table `Personne`
+-- Structure de la table `personne`
 --
 
-CREATE TABLE `Personne` (
+CREATE TABLE `personne` (
   `id` int(11) NOT NULL,
   `nom` varchar(255) NOT NULL,
   `prenom` varchar(255) NOT NULL,
@@ -61,10 +62,10 @@ CREATE TABLE `Personne` (
 -- --------------------------------------------------------
 
 --
--- Structure de la table `Resultat`
+-- Structure de la table `resultat`
 --
 
-CREATE TABLE `Resultat` (
+CREATE TABLE `resultat` (
   `id_ecf` int(11) NOT NULL,
   `id_stagiaire` int(11) NOT NULL,
   `validation` tinyint(1) NOT NULL DEFAULT '0'
@@ -73,20 +74,20 @@ CREATE TABLE `Resultat` (
 -- --------------------------------------------------------
 
 --
--- Structure de la table `Stagiaire`
+-- Structure de la table `stagiaire`
 --
 
-CREATE TABLE `Stagiaire` (
+CREATE TABLE `stagiaire` (
   `code` int(11) NOT NULL,
   `id_personne` int(11) NOT NULL,
   `id_formation` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Déclencheurs `Stagiaire`
+-- Déclencheurs `stagiaire`
 --
 DELIMITER $$
-CREATE TRIGGER `Stagiaire_AFTER_DELETE` AFTER DELETE ON `Stagiaire` FOR EACH ROW BEGIN
+CREATE TRIGGER `Stagiaire_AFTER_DELETE` AFTER DELETE ON `stagiaire` FOR EACH ROW BEGIN
 
 update Personne p SET isStagiaire = 0 WHERE OLD.id_personne = p.id;
 
@@ -94,7 +95,7 @@ END
 $$
 DELIMITER ;
 DELIMITER $$
-CREATE TRIGGER `Stagiaire_AFTER_INSERT` AFTER INSERT ON `Stagiaire` FOR EACH ROW BEGIN
+CREATE TRIGGER `Stagiaire_AFTER_INSERT` AFTER INSERT ON `stagiaire` FOR EACH ROW BEGIN
 
 update Personne p SET isStagiaire = 1 WHERE NEW.id_personne = p.id;
 
@@ -107,35 +108,35 @@ DELIMITER ;
 --
 
 --
--- Index pour la table `ECF`
+-- Index pour la table `ecf`
 --
-ALTER TABLE `ECF`
+ALTER TABLE `ecf`
   ADD PRIMARY KEY (`id`),
   ADD KEY `id_formation` (`id_formation`);
 
 --
--- Index pour la table `Formation`
+-- Index pour la table `formation`
 --
-ALTER TABLE `Formation`
+ALTER TABLE `formation`
   ADD PRIMARY KEY (`id`);
 
 --
--- Index pour la table `Personne`
+-- Index pour la table `personne`
 --
-ALTER TABLE `Personne`
+ALTER TABLE `personne`
   ADD PRIMARY KEY (`id`);
 
 --
--- Index pour la table `Resultat`
+-- Index pour la table `resultat`
 --
-ALTER TABLE `Resultat`
+ALTER TABLE `resultat`
   ADD KEY `id_ecf` (`id_ecf`,`id_stagiaire`),
   ADD KEY `id_stagiaire` (`id_stagiaire`);
 
 --
--- Index pour la table `Stagiaire`
+-- Index pour la table `stagiaire`
 --
-ALTER TABLE `Stagiaire`
+ALTER TABLE `stagiaire`
   ADD PRIMARY KEY (`code`),
   ADD KEY `id_personne` (`id_personne`),
   ADD KEY `id_formation` (`id_formation`);
@@ -145,48 +146,48 @@ ALTER TABLE `Stagiaire`
 --
 
 --
--- AUTO_INCREMENT pour la table `ECF`
+-- AUTO_INCREMENT pour la table `ecf`
 --
-ALTER TABLE `ECF`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+ALTER TABLE `ecf`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 --
--- AUTO_INCREMENT pour la table `Formation`
+-- AUTO_INCREMENT pour la table `formation`
 --
-ALTER TABLE `Formation`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+ALTER TABLE `formation`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 --
--- AUTO_INCREMENT pour la table `Personne`
+-- AUTO_INCREMENT pour la table `personne`
 --
-ALTER TABLE `Personne`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+ALTER TABLE `personne`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 --
--- AUTO_INCREMENT pour la table `Stagiaire`
+-- AUTO_INCREMENT pour la table `stagiaire`
 --
-ALTER TABLE `Stagiaire`
-  MODIFY `code` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+ALTER TABLE `stagiaire`
+  MODIFY `code` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 --
 -- Contraintes pour les tables exportées
 --
 
 --
--- Contraintes pour la table `ECF`
+-- Contraintes pour la table `ecf`
 --
-ALTER TABLE `ECF`
-  ADD CONSTRAINT `ECF_ibfk_1` FOREIGN KEY (`id_formation`) REFERENCES `Formation` (`id`);
+ALTER TABLE `ecf`
+  ADD CONSTRAINT `ECF_ibfk_1` FOREIGN KEY (`id_formation`) REFERENCES `formation` (`id`);
 
 --
--- Contraintes pour la table `Resultat`
+-- Contraintes pour la table `resultat`
 --
-ALTER TABLE `Resultat`
-  ADD CONSTRAINT `Resultat_ibfk_1` FOREIGN KEY (`id_ecf`) REFERENCES `ECF` (`id`),
-  ADD CONSTRAINT `Resultat_ibfk_2` FOREIGN KEY (`id_stagiaire`) REFERENCES `Stagiaire` (`code`);
+ALTER TABLE `resultat`
+  ADD CONSTRAINT `Resultat_ibfk_1` FOREIGN KEY (`id_ecf`) REFERENCES `ecf` (`id`),
+  ADD CONSTRAINT `Resultat_ibfk_2` FOREIGN KEY (`id_stagiaire`) REFERENCES `stagiaire` (`code`);
 
 --
--- Contraintes pour la table `Stagiaire`
+-- Contraintes pour la table `stagiaire`
 --
-ALTER TABLE `Stagiaire`
-  ADD CONSTRAINT `Stagiaire_ibfk_1` FOREIGN KEY (`id_personne`) REFERENCES `Personne` (`id`),
-  ADD CONSTRAINT `Stagiaire_ibfk_2` FOREIGN KEY (`id_formation`) REFERENCES `Formation` (`id`);
+ALTER TABLE `stagiaire`
+  ADD CONSTRAINT `Stagiaire_ibfk_1` FOREIGN KEY (`id_personne`) REFERENCES `personne` (`id`),
+  ADD CONSTRAINT `Stagiaire_ibfk_2` FOREIGN KEY (`id_formation`) REFERENCES `formation` (`id`);
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
