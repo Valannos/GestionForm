@@ -100,6 +100,7 @@ public class MainWindow extends javax.swing.JFrame {
         jToggleButton_Valid_ECF.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                selectedFormation = formModel.getFormation(JTable_Formations.getSelectedRow());
 
                 int input = JOptionPane.showConfirmDialog(jList_ECF_From_Formation, "Attention, la validation d'un ECF est irréversible ! Confirmez ?", "Confirmation", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
 
@@ -114,6 +115,7 @@ public class MainWindow extends javax.swing.JFrame {
                     jToggleButton_Valid_ECF.setEnabled(false);
 
                 }
+
             }
         });
         JTable_Formations.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
@@ -620,9 +622,15 @@ public class MainWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton_edit_stagiaireActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        JOptionPane.showMessageDialog(this, "Une fois le premier stagiaire ajouté, il ne sera plus possible de rajouter des ECF", "Avertissement", JOptionPane.WARNING_MESSAGE);
-        ECFForm ecfform = new ECFForm(this, true, selectedFormation);
-        ecfform.setVisible(true);
+        if (!StagiaireDAO.getStgByFormation(selectedFormation).isEmpty()) {
+            JOptionPane.showMessageDialog(jList_ECF_From_Formation, "Impossible de rajouter un ECF à une formation contenant un ou plusieurs stagiaire", "Erreur", JOptionPane.ERROR_MESSAGE);
+        } else {
+
+            JOptionPane.showMessageDialog(this, "Une fois le premier stagiaire ajouté, il ne sera plus possible de rajouter des ECF", "Avertissement", JOptionPane.WARNING_MESSAGE);
+            ECFForm ecfform = new ECFForm(this, true, selectedFormation);
+            ecfform.setVisible(true);
+        }
+
 
     }//GEN-LAST:event_jButton1ActionPerformed
 
