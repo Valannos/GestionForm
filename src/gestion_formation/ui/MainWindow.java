@@ -7,6 +7,7 @@ package gestion_formation.ui;
 
 import gestion_formation.model.DAO.ECFDAO;
 import gestion_formation.model.DAO.FormationDAO;
+import gestion_formation.model.DAO.PersonneDAO;
 import gestion_formation.model.DAO.ResultatDAO;
 import gestion_formation.model.DAO.StagiaireDAO;
 import gestion_formation.model.ECF;
@@ -72,6 +73,14 @@ public class MainWindow extends javax.swing.JFrame {
             }
 
         });
+        jList_ECF_formations_tab.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                jButton_Edit_ECF.setEnabled(true);
+                jButton_Delete_ECF.setEnabled(true);
+            }
+        });
+
         jList_ECF_From_Formation.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
@@ -100,7 +109,7 @@ public class MainWindow extends javax.swing.JFrame {
         jToggleButton_Valid_ECF.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                selectedFormation = formModel.getFormation(JTable_Formations.getSelectedRow());
+                //      selectedFormation = formModel.getFormation(JTable_Formations.getSelectedRow());
 
                 int input = JOptionPane.showConfirmDialog(jList_ECF_From_Formation, "Attention, la validation d'un ECF est irréversible ! Confirmez ?", "Confirmation", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
 
@@ -130,7 +139,9 @@ public class MainWindow extends javax.swing.JFrame {
                     List<ECF> ecf = ECFDAO.findAllinFormation(selectedFormation);
                     dlm.addECFList(ecf);
                     jList_ECF_From_Formation.setSelectedIndex(-1);
-
+                    JButton_Edit_Formation.setEnabled(true);
+                    jButton_Delete_Formation.setEnabled(true);
+                    jButton_Add_ECF.setEnabled(true);
                     jList_ECF_formations_tab.setModel(dlm);
                     jList_ECF_formations_tab.setEnabled(true);
                 }
@@ -155,8 +166,10 @@ public class MainWindow extends javax.swing.JFrame {
         jPanel_Btns_Formations = new javax.swing.JPanel();
         JButton_Edit_Formation = new javax.swing.JButton();
         jButton_Add_Formation = new javax.swing.JButton();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        jButton_Add_ECF = new javax.swing.JButton();
+        jButton_Edit_ECF = new javax.swing.JButton();
+        jButton_Delete_Formation = new javax.swing.JButton();
+        jButton_Delete_ECF = new javax.swing.JButton();
         jScroll_ECF = new javax.swing.JScrollPane();
         jList_ECF_formations_tab = new javax.swing.JList<>();
         jPanel_ECF_Description = new javax.swing.JPanel();
@@ -205,6 +218,7 @@ public class MainWindow extends javax.swing.JFrame {
         JScrollPane_Formations.setViewportView(JTable_Formations);
 
         JButton_Edit_Formation.setText("Editer Formation");
+        JButton_Edit_Formation.setEnabled(false);
         JButton_Edit_Formation.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 JButton_Edit_FormationActionPerformed(evt);
@@ -218,14 +232,50 @@ public class MainWindow extends javax.swing.JFrame {
             }
         });
 
-        jButton1.setText("Ajouter un ECF");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        jButton_Add_ECF.setText("Ajouter un ECF");
+        jButton_Add_ECF.setEnabled(false);
+        jButton_Add_ECF.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                jButton_Add_ECFActionPerformed(evt);
             }
         });
 
-        jButton2.setText("Editer un ECF");
+        jButton_Edit_ECF.setText("Editer un ECF");
+        jButton_Edit_ECF.setEnabled(false);
+
+        jButton_Delete_Formation.setText("Supprimer Formation");
+        jButton_Delete_Formation.setEnabled(false);
+        jButton_Delete_Formation.addAncestorListener(new javax.swing.event.AncestorListener() {
+            public void ancestorAdded(javax.swing.event.AncestorEvent evt) {
+                jButton_Delete_FormationAncestorAdded(evt);
+            }
+            public void ancestorRemoved(javax.swing.event.AncestorEvent evt) {
+            }
+            public void ancestorMoved(javax.swing.event.AncestorEvent evt) {
+            }
+        });
+        jButton_Delete_Formation.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_Delete_FormationActionPerformed(evt);
+            }
+        });
+
+        jButton_Delete_ECF.setText("Supprimer ECF");
+        jButton_Delete_ECF.setEnabled(false);
+        jButton_Delete_ECF.addAncestorListener(new javax.swing.event.AncestorListener() {
+            public void ancestorAdded(javax.swing.event.AncestorEvent evt) {
+                jButton_Delete_ECFAncestorAdded(evt);
+            }
+            public void ancestorRemoved(javax.swing.event.AncestorEvent evt) {
+            }
+            public void ancestorMoved(javax.swing.event.AncestorEvent evt) {
+            }
+        });
+        jButton_Delete_ECF.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_Delete_ECFActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel_Btns_FormationsLayout = new javax.swing.GroupLayout(jPanel_Btns_Formations);
         jPanel_Btns_Formations.setLayout(jPanel_Btns_FormationsLayout);
@@ -233,25 +283,37 @@ public class MainWindow extends javax.swing.JFrame {
             jPanel_Btns_FormationsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel_Btns_FormationsLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jButton_Add_Formation)
+                .addGroup(jPanel_Btns_FormationsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jButton_Add_Formation, javax.swing.GroupLayout.DEFAULT_SIZE, 155, Short.MAX_VALUE)
+                    .addComponent(jButton_Add_ECF, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(18, 18, 18)
-                .addComponent(JButton_Edit_Formation)
+                .addGroup(jPanel_Btns_FormationsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(JButton_Edit_Formation, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jButton_Edit_ECF, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(18, 18, 18)
-                .addComponent(jButton1)
-                .addGap(18, 18, 18)
-                .addComponent(jButton2)
-                .addContainerGap(294, Short.MAX_VALUE))
+                .addGroup(jPanel_Btns_FormationsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jButton_Delete_Formation, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jButton_Delete_ECF, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel_Btns_FormationsLayout.setVerticalGroup(
             jPanel_Btns_FormationsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel_Btns_FormationsLayout.createSequentialGroup()
+            .addGroup(jPanel_Btns_FormationsLayout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel_Btns_FormationsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(JButton_Edit_Formation)
                     .addComponent(jButton_Add_Formation)
-                    .addComponent(jButton1)
-                    .addComponent(jButton2))
-                .addContainerGap())
+                    .addComponent(jButton_Delete_Formation))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel_Btns_FormationsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel_Btns_FormationsLayout.createSequentialGroup()
+                        .addComponent(jButton_Add_ECF)
+                        .addGap(5, 5, 5))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel_Btns_FormationsLayout.createSequentialGroup()
+                        .addGroup(jPanel_Btns_FormationsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jButton_Edit_ECF)
+                            .addComponent(jButton_Delete_ECF))
+                        .addContainerGap())))
         );
 
         jList_ECF_formations_tab.setModel(new javax.swing.AbstractListModel<String>() {
@@ -285,7 +347,7 @@ public class MainWindow extends javax.swing.JFrame {
                 .addComponent(JScrollPane_Formations, javax.swing.GroupLayout.PREFERRED_SIZE, 350, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(JPanel_Tab_FormationsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScroll_ECF)
+                    .addComponent(jScroll_ECF, javax.swing.GroupLayout.DEFAULT_SIZE, 474, Short.MAX_VALUE)
                     .addComponent(jPanel_ECF_Description, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -379,7 +441,7 @@ public class MainWindow extends javax.swing.JFrame {
                 .addGroup(jPanel_Add_StagiaireLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jButton_Add_Stagiaire)
                     .addComponent(jButton3))
-                .addGap(0, 91, Short.MAX_VALUE))
+                .addGap(0, 98, Short.MAX_VALUE))
         );
 
         jSplitPane_Stg_Manager.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
@@ -394,6 +456,11 @@ public class MainWindow extends javax.swing.JFrame {
 
         jButton_suppres_stagiaire.setText("Supprimer stagiaire");
         jButton_suppres_stagiaire.setEnabled(false);
+        jButton_suppres_stagiaire.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_suppres_stagiaireActionPerformed(evt);
+            }
+        });
 
         jLabel5.setText("jLabel5");
         jLabel5.setEnabled(false);
@@ -598,11 +665,21 @@ public class MainWindow extends javax.swing.JFrame {
             if (input == JOptionPane.YES_OPTION) {
 
                 Stagiaire stg = new Stagiaire((Formation) jComboBox_formation.getSelectedItem(), jTextField_add_stagiaire_name.getText(), jTextField_add_stagiaire_firstname.getText());
+                int stg_id = StagiaireDAO.AddStagiaire(stg);
 
-                if (StagiaireDAO.AddStagiaire(stg)) {
+                stg.setCodeStagiaire(stg_id);
+
+                if (stg.getCodeStagiaire() > 0) {
+
+                    List<ECF> listECF = ECFDAO.findAllinFormation(stg.getForm());
+
+                    for (ECF ecf : listECF) {
+                        ResultatDAO.initiateStagiaireResultat(stg, ecf);
+                    }
 
                     JOptionPane.showMessageDialog(this, stg.getPrenom() + " " + stg.getNom() + " suit désormais la formation " + stg.getForm().getNom() + ".", "Information", JOptionPane.INFORMATION_MESSAGE);
                     clearForm_jPanel_Add_Stagiaire();
+                    stgtblmod.addStagiaire(stg);
 
                 } else if (input == JOptionPane.NO_OPTION) {
 
@@ -621,18 +698,88 @@ public class MainWindow extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jButton_edit_stagiaireActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void jButton_Add_ECFActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_Add_ECFActionPerformed
         if (!StagiaireDAO.getStgByFormation(selectedFormation).isEmpty()) {
             JOptionPane.showMessageDialog(jList_ECF_From_Formation, "Impossible de rajouter un ECF à une formation contenant un ou plusieurs stagiaire", "Erreur", JOptionPane.ERROR_MESSAGE);
         } else {
 
             JOptionPane.showMessageDialog(this, "Une fois le premier stagiaire ajouté, il ne sera plus possible de rajouter des ECF", "Avertissement", JOptionPane.WARNING_MESSAGE);
-            ECFForm ecfform = new ECFForm(this, true, selectedFormation);
+            ECFForm ecfform = new ECFForm(this, true, selectedFormation, dlm);
             ecfform.setVisible(true);
         }
 
 
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_jButton_Add_ECFActionPerformed
+
+    private void jButton_Delete_FormationAncestorAdded(javax.swing.event.AncestorEvent evt) {//GEN-FIRST:event_jButton_Delete_FormationAncestorAdded
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton_Delete_FormationAncestorAdded
+
+    private void jButton_Delete_FormationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_Delete_FormationActionPerformed
+
+        int index = JTable_Formations.getSelectedRow();
+        Formation form = formModel.getFormation(index);
+
+        if (!StagiaireDAO.getStgByFormation(form).isEmpty()) {
+            
+              JOptionPane.showMessageDialog(jList_ECF_From_Formation, "Impossible de supprimer une formation dans laquelle des stagiaires sont inscrits", "Supression impossible", JOptionPane.ERROR_MESSAGE);
+
+        } else {
+            int input = JOptionPane.showConfirmDialog(this, "Attention : la formation et les ECF associés seront supprimés définitivement.", "Confirmation", JOptionPane.YES_NO_OPTION);
+            if (input == JOptionPane.OK_OPTION) {
+
+                if (FormationDAO.deleteFormation(form)) {
+
+                    JOptionPane.showMessageDialog(jList_ECF_From_Formation, "Formation supprimée avec succès", "Confirmation", JOptionPane.INFORMATION_MESSAGE);
+                    JButton_Edit_Formation.setEnabled(false);
+                    jButton_Delete_Formation.setEnabled(false);
+                    formModel.removeFormation(index);
+
+                }
+            }
+        }
+
+
+    }//GEN-LAST:event_jButton_Delete_FormationActionPerformed
+
+    private void jButton_Delete_ECFAncestorAdded(javax.swing.event.AncestorEvent evt) {//GEN-FIRST:event_jButton_Delete_ECFAncestorAdded
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton_Delete_ECFAncestorAdded
+
+    private void jButton_Delete_ECFActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_Delete_ECFActionPerformed
+        ECF ecf = (ECF) dlm.get(jList_ECF_formations_tab.getSelectedIndex());
+
+        if (ECFDAO.deleteECF(ecf)) {
+
+            JOptionPane.showMessageDialog(jList_ECF_From_Formation, "ECF supprimé avec succès", "Confirmation", JOptionPane.INFORMATION_MESSAGE);
+            dlm.remove(jList_ECF_formations_tab.getSelectedIndex());
+            jList_ECF_formations_tab.setSelectedIndex(-1);
+            jButton_Delete_ECF.setEnabled(false);
+            jButton_Edit_ECF.setEnabled(false);
+
+        } else {
+
+            JOptionPane.showMessageDialog(jList_ECF_From_Formation, "Impossible de supprimer l'ECF", "Erreur", JOptionPane.ERROR_MESSAGE);
+
+        }
+
+    }//GEN-LAST:event_jButton_Delete_ECFActionPerformed
+
+    private void jButton_suppres_stagiaireActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_suppres_stagiaireActionPerformed
+
+        Stagiaire stg = stgtblmod.getStagiaire(jTable_Stagiaires.getSelectedRow());
+
+        if (StagiaireDAO.deleteStagiaire(stg)) {
+            System.out.print(stg.getId());
+            PersonneDAO.deletePersonneById(stg.getId());
+            JOptionPane.showMessageDialog(jList_ECF_From_Formation, stg.getPrenom() + " " + stg.getNom() + " a retiré avec succès de la formation " + stg.getForm().getNom() + ".", "Confirmation", JOptionPane.INFORMATION_MESSAGE);
+            stgtblmod.removeStagiaire(jTable_Stagiaires.getSelectedRow());
+            jButton_edit_stagiaire.setEnabled(false);
+            jButton_suppres_stagiaire.setEnabled(false);
+            dlm.clear();
+
+        }
+    }//GEN-LAST:event_jButton_suppres_stagiaireActionPerformed
 
     private void clearForm_jPanel_Add_Stagiaire() {
 
@@ -644,7 +791,7 @@ public class MainWindow extends javax.swing.JFrame {
 
     private void showFormationFormJDiag() {
 
-        FormationForm formationForm = new FormationForm(this, true);
+        FormationForm formationForm = new FormationForm(this, true, formModel);
         formationForm.setVisible(true);
 
     }
@@ -691,11 +838,13 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JScrollPane JScrollPane_Formations;
     private javax.swing.JTable JTable_Formations;
     private javax.swing.JTabbedPane Tabs;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
+    private javax.swing.JButton jButton_Add_ECF;
     private javax.swing.JButton jButton_Add_Formation;
     private javax.swing.JButton jButton_Add_Stagiaire;
+    private javax.swing.JButton jButton_Delete_ECF;
+    private javax.swing.JButton jButton_Delete_Formation;
+    private javax.swing.JButton jButton_Edit_ECF;
     private javax.swing.JButton jButton_edit_stagiaire;
     private javax.swing.JButton jButton_suppres_stagiaire;
     private javax.swing.JComboBox<Formation> jComboBox_formation;

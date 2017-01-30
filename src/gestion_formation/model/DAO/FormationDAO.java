@@ -153,5 +153,38 @@ public class FormationDAO {
         }
 
     }
+    
+    public static boolean deleteFormation(Formation form) {
+        
+        boolean confirm = false;
+        Connection connect = DBConnect.gettingConnected();
+          try {
+
+            String query = "DELETE FROM Formation WHERE id = ?";
+
+            PreparedStatement ps = connect.prepareStatement(query);
+            ps.setInt(1, form.getId());
+
+            ps.execute();
+            confirm = true;
+
+        } catch (SQLException ex) {
+            Logger.getLogger(FormationDAO.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+
+            if (connect != null) {
+                try {
+
+                    connect.close();
+
+                } catch (SQLException ex) {
+                    Logger.getLogger(FormationDAO.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+
+        }
+        
+        return confirm;
+    }
 
 }

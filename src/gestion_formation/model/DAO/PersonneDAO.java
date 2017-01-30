@@ -138,4 +138,39 @@ public class PersonneDAO {
         return generatedId;
     }
 
+    public static boolean deletePersonneById(int id) {
+
+        boolean confirm = false;
+
+         Connection connect = DBConnect.gettingConnected();
+
+        try {
+
+            String query = "DELETE FROM Personne WHERE id = ?";
+
+            PreparedStatement ps = connect.prepareStatement(query);
+            ps.setInt(1, id);
+
+            ps.execute();
+
+        } catch (SQLException ex) {
+            Logger.getLogger(StagiaireDAO.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+
+            if (connect != null) {
+                try {
+
+                    connect.close();
+
+                } catch (SQLException ex) {
+                    Logger.getLogger(StagiaireDAO.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+
+        }
+        
+        
+        return confirm;
+    }
+
 }

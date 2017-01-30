@@ -34,7 +34,7 @@ public class StagiaireDAO {
 
             state = connect.createStatement();
 
-            String sql = ("SELECT s.code, p.nom, p.prenom, f.id, f.nom_formation FROM Stagiaire s INNER JOIN Personne p ON p.id = s.id_personne INNER JOIN Formation f ON f.id = s.id_formation");
+            String sql = ("SELECT p.id, s.code, p.nom, p.prenom, f.id, f.nom_formation FROM Stagiaire s INNER JOIN Personne p ON p.id = s.id_personne INNER JOIN Formation f ON f.id = s.id_formation");
 
             ResultSet res = state.executeQuery(sql);
 
@@ -68,16 +68,15 @@ public class StagiaireDAO {
 
     }
 
-    public static boolean addStagiaireToFormation(Personne pers, Formation form) {
+    public static int addStagiaireToFormation(Personne pers, Formation form) {
 
         int id = 0;
         Connection connect = DBConnect.gettingConnected();
-        boolean success = false;
+        int stg_id = 0;
 
         try {
 
-            FormationDAO formDAO = new FormationDAO();
-            id = formDAO.getFormationId(form);
+            id = FormationDAO.getFormationId(form);
 
             String sql = "INSERT INTO `Stagiaire` (id_personne, id_formation) VALUES ( ?, ?)";
 
@@ -86,6 +85,9 @@ public class StagiaireDAO {
                 ps.setInt(2, form.getId());
 
                 ps.execute();
+                ResultSet rs = ps.getGeneratedKeys();
+                rs.next();
+                stg_id = rs.getInt(1);
             }
 
         } catch (SQLException ex) {
@@ -102,7 +104,7 @@ public class StagiaireDAO {
             }
 
         }
-        return success;
+        return stg_id;
     }
 
     public static List<Stagiaire> getStgByFormation(Formation form) {
@@ -157,8 +159,9 @@ public class StagiaireDAO {
         return listStg;
     }
 
-    public static void RemoveStagiaire(Stagiaire stg) {
+    public static boolean deleteStagiaire(Stagiaire stg) {
 
+        boolean confirm = false;
         Connection connect = DBConnect.gettingConnected();
 
         try {
@@ -169,6 +172,7 @@ public class StagiaireDAO {
             ps.setInt(1, stg.getCodeStagiaire());
 
             ps.execute();
+            confirm = true;
 
         } catch (SQLException ex) {
             Logger.getLogger(StagiaireDAO.class.getName()).log(Level.SEVERE, null, ex);
@@ -185,22 +189,25 @@ public class StagiaireDAO {
             }
 
         }
-
+        return confirm;
     }
 
-    public static boolean AddStagiaire(Stagiaire stg) {
-        boolean success = false;
+    public static int AddStagiaire(Stagiaire stg) {
+        int stg_id = 0;
         int id = PersonneDAO.addPersonne(new Personne(stg.getNom(), stg.getPrenom()));
 
         Connection connect = DBConnect.gettingConnected();
 
         String sql = "INSERT INTO Stagiaire (id_personne, id_formation) VALUES (?, ?)";
         try {
-            PreparedStatement ps = connect.prepareStatement(sql);
+            PreparedStatement ps = connect.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             ps.setInt(1, id);
             ps.setInt(2, stg.getForm().getId());
             ps.execute();
-            success = true;
+            ResultSet rs = ps.getGeneratedKeys();
+            rs.next();
+            stg_id = rs.getInt(1);
+
         } catch (SQLException ex) {
             Logger.getLogger(StagiaireDAO.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
@@ -217,7 +224,7 @@ public class StagiaireDAO {
 
         }
 
-        return success;
+        return stg_id;
     }
 
 }

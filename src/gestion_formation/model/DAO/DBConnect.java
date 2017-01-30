@@ -23,7 +23,7 @@ public class DBConnect {
 
     final static private String url = "jdbc:mysql://localhost/Gestion_Formation";
     final static private String login = "root";
-    final static String password = "";
+    final static String password = "admin";
     
     
     /**

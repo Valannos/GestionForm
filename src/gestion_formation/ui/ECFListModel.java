@@ -40,8 +40,23 @@ public class ECFListModel extends DefaultListModel {
             
             this.addElement(listECF.get(i));
             
+            
         }
         
+       
+        
+    }
+    
+    public void addECF(ECF ecf) {
+        
+        this.addElement(ecf);
+        this.fireContentsChanged(ecf, 0, 0);
+        
+    }
+
+    @Override
+    public void removeElementAt(int index) {
+        super.removeElementAt(index); //To change body of generated methods, choose Tools | Templates.
     }
 
     
@@ -50,6 +65,11 @@ public class ECFListModel extends DefaultListModel {
     @Override
     public boolean isEmpty() {
         return super.isEmpty(); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    
+    public ECF getECF(int index) {
+        return ECFFromForm.get(index);
     }
     
 

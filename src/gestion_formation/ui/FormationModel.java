@@ -63,10 +63,23 @@ public class FormationModel extends AbstractTableModel {
         }
 
     }
-    
+
     public Formation getFormation(int index) {
-        
-        
+
         return allForms.get(index);
+    }
+
+    public void addFormation(Formation form) {
+
+        allForms = FormationDAO.findAll();
+        this.fireTableDataChanged();
+
+    }
+    
+    public void removeFormation(int index) {
+        
+        allForms.remove(index);
+        this.fireTableDataChanged();
+        
     }
 }

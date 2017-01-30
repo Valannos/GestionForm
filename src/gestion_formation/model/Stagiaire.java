@@ -35,10 +35,14 @@ public class Stagiaire extends Personne {
         super(nom, prenom);
         this.form = form;
     }
+
+    public void setCodeStagiaire(int codeStagiaire) {
+        this.codeStagiaire = codeStagiaire;
+    }
     
     
     
-  
+   
     
     
     public Formation getForm() {

@@ -230,29 +230,60 @@ public class ResultatDAO {
     public static void switchResultToValidated(Resultat rslt) {
 
         if (!rslt.isValide()) {
-            
-             Connection connect = DBConnect.gettingConnected();
-             
-             try {
-                 
-                 String sql = "UPDATE Resultat r SET r.validation = 1 WHERE r.id_stagiaire = ? AND r.id_ecf = ?"; 
-                 PreparedStatement ps = connect.prepareStatement(sql);
-                 ps.setInt(1, rslt.getStg().getCodeStagiaire());
-                 ps.setInt(2, rslt.getEcf().getId());
-                 
-                 ps.execute();
-                 
-                 
-                 
-             } catch (SQLException ex) {
+
+            Connection connect = DBConnect.gettingConnected();
+
+            try {
+
+                String sql = "UPDATE Resultat r SET r.validation = 1 WHERE r.id_stagiaire = ? AND r.id_ecf = ?";
+                PreparedStatement ps = connect.prepareStatement(sql);
+                ps.setInt(1, rslt.getStg().getCodeStagiaire());
+                ps.setInt(2, rslt.getEcf().getId());
+
+                ps.execute();
+
+            } catch (SQLException ex) {
                 Logger.getLogger(ResultatDAO.class.getName()).log(Level.SEVERE, null, ex);
             }
-             
-            
+
         }
-        
-       
 
     }
+
+    public static void initiateStagiaireResultat(Stagiaire stg, ECF ecf) {
+      
+            Connection connect = DBConnect.gettingConnected();
+            Resultat rslt = new Resultat(false, ecf, stg);
+            System.out.print(rslt.getEcf().getNom() + rslt.getStg().getCodeStagiaire());
+            try {
+
+                String sql = "INSERT INTO `Resultat` (`id_ecf`, `id_stagiaire`) VALUES (?, ?)";
+                PreparedStatement ps = connect.prepareStatement(sql);
+
+                ps.setInt(1, rslt.getEcf().getId());
+                ps.setInt(2, rslt.getStg().getCodeStagiaire());
+
+                ps.execute();
+
+            
+
+            } catch (SQLException ex) {
+                Logger.getLogger(ResultatDAO.class.getName()).log(Level.SEVERE, null, ex);
+            } finally {
+                
+                try {
+                    
+                    connect.close();
+                    
+                    
+                } catch (SQLException ex) {
+                    Logger.getLogger(ResultatDAO.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                
+            }
+
+        }
+
+    
 
 }

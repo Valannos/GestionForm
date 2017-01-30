@@ -18,19 +18,22 @@ import javax.swing.JOptionPane;
 public class ECFForm extends javax.swing.JDialog {
 
     Formation importedForm;
+    private ECFListModel ecfModel;
 
     /**
      * Creates new form ECFForm
      *
      * @param parent
      * @param modal
-     * @param form : selected formation in JTable 
+     * @param form : selected formation in JTable
+     * @param ecfModel
      */
-    public ECFForm(java.awt.Frame parent, boolean modal, Formation form) {
+    public ECFForm(java.awt.Frame parent, boolean modal, Formation form, ECFListModel ecfModel) {
 
         super(parent, modal);
         this.importedForm = form;
         initComponents();
+        this.ecfModel = ecfModel;
     }
 
     private ECFForm(JFrame jFrame, boolean b) {
@@ -139,12 +142,12 @@ public class ECFForm extends javax.swing.JDialog {
         } else {
             ECF ecf = new ECF(jTextField_ECF_Name.getText(), this.importedForm, jTextArea_Desc_ECF.getText());
             if (ECFDAO.addECFToFormation(ecf)) {
-                
-                 JOptionPane.showMessageDialog(this, "L'ECF " + ecf.getNom() + " a bien été rajouté à la formation + " + ecf.getFormation().getNom() + ".", "Confirmation", JOptionPane.INFORMATION_MESSAGE);
-                 this.dispose();
-                
+
+                JOptionPane.showMessageDialog(this, "L'ECF " + ecf.getNom() + " a bien été rajouté à la formation + " + ecf.getFormation().getNom() + ".", "Confirmation", JOptionPane.INFORMATION_MESSAGE);
+                ecfModel.addECF(ecf);
+                this.dispose();
+
             }
-  
 
         }
     }//GEN-LAST:event_jButton1ActionPerformed

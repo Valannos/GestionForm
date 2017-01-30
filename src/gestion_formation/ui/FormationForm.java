@@ -15,15 +15,21 @@ import javax.swing.JOptionPane;
  */
 public class FormationForm extends javax.swing.JDialog {
 
+    private final FormationModel formModel;
+
     /**
      * Creates new form FormationForm
      * @param parent
      * @param modal
      */
-    public FormationForm(java.awt.Frame parent, boolean modal) {
+    public FormationForm(java.awt.Frame parent, boolean modal, FormationModel formModel) {
         super(parent, modal);
+    
         initComponents();
+        this.formModel = formModel;
     }
+
+   
 
   
 
@@ -177,8 +183,9 @@ public class FormationForm extends javax.swing.JDialog {
             
             
             FormationDAO.addFormation(form);
-            
             JOptionPane.showMessageDialog(this, "Formation ajoutée avec succès, ajoutez les ECF avant d'inscrire les stagiaires", "Formation", JOptionPane.INFORMATION_MESSAGE);
+            
+            formModel.addFormation(form);
             this.dispose();
             
         }
@@ -217,8 +224,9 @@ public class FormationForm extends javax.swing.JDialog {
 
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
+            private FormationModel FormationModel;
             public void run() {
-                FormationForm dialog = new FormationForm(new javax.swing.JFrame(), true);
+                FormationForm dialog = new FormationForm(new javax.swing.JFrame(), true, FormationModel);
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent e) {

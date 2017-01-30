@@ -59,14 +59,22 @@ public class StagiaireTableModel extends AbstractTableModel {
 
     }
 
-
-
     public Stagiaire getStagiaire(int rowIndex) {
 
         return allStg.get(rowIndex);
 
     }
+
+    public void addStagiaire(Stagiaire stg) {
+        this.allStg.add(stg);
+        this.fireTableDataChanged();
+    }
     
-    
+    public void removeStagiaire(int index) {
+        
+        this.allStg.remove(index);
+          this.fireTableDataChanged();
+        
+    }
 
 }
