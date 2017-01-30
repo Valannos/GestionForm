@@ -16,9 +16,12 @@ import javax.swing.JOptionPane;
  * @author Valannos
  */
 public class ECFForm extends javax.swing.JDialog {
-
+    
     Formation importedForm;
     private ECFListModel ecfModel;
+    private ECF currentECF;
+    private int ECFId;
+    private int indexModel;
 
     /**
      * Creates new form ECFForm
@@ -29,13 +32,31 @@ public class ECFForm extends javax.swing.JDialog {
      * @param ecfModel
      */
     public ECFForm(java.awt.Frame parent, boolean modal, Formation form, ECFListModel ecfModel) {
-
+        
         super(parent, modal);
         this.importedForm = form;
         initComponents();
         this.ecfModel = ecfModel;
+        this.ECFId = 0;
+        
+        
     }
-
+    
+    public ECFForm(java.awt.Frame parent, boolean modal, Formation form, ECFListModel ecfModel, ECF toEditECF, int index) {
+        
+        super(parent, modal);
+        this.importedForm = form;
+        this.ecfModel = ecfModel;
+        this.currentECF = toEditECF;
+        this.indexModel = index;
+        initComponents();
+        this.ECFId = toEditECF.getId();
+        jTextField_ECF_Name.setText(toEditECF.getNom());
+        jTextArea_Desc_ECF.setText(toEditECF.getDescription());
+        JLabel_ECF_FormTitle.setText("Edition de l'ECF " + toEditECF.getNom() + ".");
+        
+    }
+    
     private ECFForm(JFrame jFrame, boolean b) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
@@ -49,7 +70,7 @@ public class ECFForm extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel1 = new javax.swing.JLabel();
+        JLabel_ECF_FormTitle = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jTextField_ECF_Name = new javax.swing.JTextField();
@@ -60,7 +81,7 @@ public class ECFForm extends javax.swing.JDialog {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
-        jLabel1.setText("Ajouter un ECF à la formation : " + this.importedForm +".");
+        JLabel_ECF_FormTitle.setText("Ajouter un ECF à la formation : " + this.importedForm +".");
 
         jLabel2.setText("Nom de l'ECF");
 
@@ -91,7 +112,7 @@ public class ECFForm extends javax.swing.JDialog {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel1)
+                    .addComponent(JLabel_ECF_FormTitle)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel2)
@@ -111,7 +132,7 @@ public class ECFForm extends javax.swing.JDialog {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel1)
+                .addComponent(JLabel_ECF_FormTitle)
                 .addGap(40, 40, 40)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
@@ -135,21 +156,49 @@ public class ECFForm extends javax.swing.JDialog {
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        if (jTextField_ECF_Name.getText().isEmpty() || jTextArea_Desc_ECF.getText().isEmpty()) {
-
-            JOptionPane.showMessageDialog(this, "Certains champs ne sont pas remplis", "Erreur", JOptionPane.ERROR_MESSAGE);
-
-        } else {
-            ECF ecf = new ECF(jTextField_ECF_Name.getText(), this.importedForm, jTextArea_Desc_ECF.getText());
-            if (ECFDAO.addECFToFormation(ecf)) {
-
-                JOptionPane.showMessageDialog(this, "L'ECF " + ecf.getNom() + " a bien été rajouté à la formation + " + ecf.getFormation().getNom() + ".", "Confirmation", JOptionPane.INFORMATION_MESSAGE);
-                ecfModel.addECF(ecf);
-                this.dispose();
-
+        
+        if (this.ECFId == 0) {
+            
+            if (jTextField_ECF_Name.getText().isEmpty() || jTextArea_Desc_ECF.getText().isEmpty()) {
+                
+                JOptionPane.showMessageDialog(this, "Certains champs ne sont pas remplis", "Erreur", JOptionPane.ERROR_MESSAGE);
+                
+            } else {
+                
+                ECF ecf = new ECF(jTextField_ECF_Name.getText(), this.importedForm, jTextArea_Desc_ECF.getText());
+                if (ECFDAO.addECFToFormation(ecf)) {
+                    
+                    JOptionPane.showMessageDialog(this, "L'ECF " + ecf.getNom() + " a bien été rajouté à la formation + " + ecf.getFormation().getNom() + ".", "Confirmation", JOptionPane.INFORMATION_MESSAGE);
+                   //ecfModel.removeECF(indexModel);
+                    ecfModel.addECF(ecf);
+                    this.dispose();
+                    
+                }
+                
             }
-
+            
+        } else {
+            
+            if (jTextField_ECF_Name.getText().isEmpty() || jTextArea_Desc_ECF.getText().isEmpty()) {
+                
+                JOptionPane.showMessageDialog(this, "Certains champs ne sont pas remplis", "Erreur", JOptionPane.ERROR_MESSAGE);
+                
+            } else {
+                
+                ECF ecf = new ECF(this.ECFId, jTextField_ECF_Name.getText(), this.importedForm, jTextArea_Desc_ECF.getText());
+                if (ECFDAO.editECf(ecf)) {
+                    
+                    JOptionPane.showMessageDialog(this, "L'ECF " + ecf.getNom() + " a bien été mis à jour + " + ecf.getFormation().getNom() + ".", "Confirmation", JOptionPane.INFORMATION_MESSAGE);
+                    ecfModel.addECF(ecf);
+                    this.dispose();
+                    
+                }
+                
+            }
+            
         }
+        
+
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
@@ -195,9 +244,9 @@ public class ECFForm extends javax.swing.JDialog {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel JLabel_ECF_FormTitle;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JScrollPane jScrollPane1;

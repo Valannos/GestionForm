@@ -25,6 +25,15 @@ public class ECF {
      
     }
 
+    public ECF(int id, String nom, Formation formation, String description) {
+        this.id = id;
+        this.nom = nom;
+        this.formation = formation;
+        this.description = description;
+    }
+    
+    
+
     public ECF(String nom, Formation formation, String description) {
         this.nom = nom;
         this.formation = formation;

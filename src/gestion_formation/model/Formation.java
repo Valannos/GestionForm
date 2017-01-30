@@ -5,7 +5,6 @@
  */
 package gestion_formation.model;
 
-
 import java.util.ArrayList;
 import java.util.List;
 import java.io.Serializable;
@@ -23,6 +22,13 @@ public class Formation implements Serializable {
     private int id;
     private Date start;
     private Date end;
+
+    public Formation(String nom, int id, Date start, Date end) {
+        this.nom = nom;
+        this.id = id;
+        this.start = start;
+        this.end = end;
+    }
 
     public Formation(String nom, Date start, Date end) {
         this.nom = nom;
@@ -80,19 +86,14 @@ public class Formation implements Serializable {
         this.nom = nom;
     }
 
-  
     public Formation(String nom, List<ECF> listECF) {
         this.nom = nom;
         this.listECF = listECF;
     }
 
-    
-
     @Override
     public String toString() {
-        return nom ;
+        return nom;
     }
-    
-    
 
 }
