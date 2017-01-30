@@ -189,6 +189,7 @@ public class ECFForm extends javax.swing.JDialog {
                 if (ECFDAO.editECf(ecf)) {
                     
                     JOptionPane.showMessageDialog(this, "L'ECF " + ecf.getNom() + " a bien été mis à jour + " + ecf.getFormation().getNom() + ".", "Confirmation", JOptionPane.INFORMATION_MESSAGE);
+                    ecfModel.removeElementAt(indexModel);
                     ecfModel.addECF(ecf);
                     this.dispose();
                     

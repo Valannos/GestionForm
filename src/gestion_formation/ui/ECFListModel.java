@@ -61,10 +61,7 @@ public class ECFListModel extends DefaultListModel {
 
     }
 
-    @Override
-    public void removeElementAt(int index) {
-        super.removeElementAt(index); //To change body of generated methods, choose Tools | Templates.
-    }
+ 
 
     @Override
     public boolean isEmpty() {
