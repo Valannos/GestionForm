@@ -226,5 +226,42 @@ public class StagiaireDAO {
 
         return stg_id;
     }
+    
+    public static boolean editStagiaire(Stagiaire stg) {
+        
+        boolean confirm = false;
+        
+        Connection connect = DBConnect.gettingConnected();
+
+        try {
+
+            String query = "UPDATE Personne SET nom = ?, prenom = ? WHERE id = ?";
+
+            PreparedStatement ps = connect.prepareStatement(query);
+            ps.setString(1, stg.getNom());
+            ps.setString(2, stg.getPrenom());
+            ps.setInt(3, stg.getId());
+
+            ps.execute();
+            confirm = true;
+
+        } catch (SQLException ex) {
+            Logger.getLogger(StagiaireDAO.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+
+            if (connect != null) {
+                try {
+
+                    connect.close();
+
+                } catch (SQLException ex) {
+                    Logger.getLogger(StagiaireDAO.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+
+        }
+        
+        return confirm;
+    }
 
 }

@@ -197,6 +197,10 @@ public class FormationForm extends javax.swing.JDialog {
 
                 JOptionPane.showMessageDialog(this, "Certains champs ne sont pas remplis", "Erreur", JOptionPane.ERROR_MESSAGE);
 
+            } else if (jXDatePicker_StartingDate.getDate().after(jXDatePicker_EndingDate.getDate())) {
+
+                  JOptionPane.showMessageDialog(this, "La date de fin de formation ne peut pas précéder la date de début", "Erreur", JOptionPane.ERROR_MESSAGE);
+                
             } else {
 
                 FormationDAO.addFormation(form);

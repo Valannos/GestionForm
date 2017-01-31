@@ -4,7 +4,7 @@
   <NonVisualComponents>
     <Menu class="javax.swing.JMenuBar" name="jMenuBar1">
       <SubComponents>
-        <Menu class="javax.swing.JMenu" name="jMenu1">
+        <Menu class="javax.swing.JMenu" name="jMenu_File">
           <Properties>
             <Property name="text" type="java.lang.String" value="Fichier"/>
           </Properties>
@@ -40,7 +40,7 @@
             </MenuItem>
           </SubComponents>
         </Menu>
-        <Menu class="javax.swing.JMenu" name="jMenu3">
+        <Menu class="javax.swing.JMenu" name="jMenu_Edit">
           <Properties>
             <Property name="text" type="java.lang.String" value="Edition"/>
           </Properties>
@@ -58,7 +58,19 @@
             </MenuItem>
           </SubComponents>
         </Menu>
-        <Menu class="javax.swing.JMenu" name="jMenu2">
+        <Menu class="javax.swing.JMenu" name="jMenu_Rapport">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Rapport"/>
+          </Properties>
+          <SubComponents>
+            <MenuItem class="javax.swing.JMenuItem" name="jMenuItem_Rapport_Formations">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Cr&#xe9;er un rapport des formations"/>
+              </Properties>
+            </MenuItem>
+          </SubComponents>
+        </Menu>
+        <Menu class="javax.swing.JMenu" name="jMenu_Help">
           <Properties>
             <Property name="text" type="java.lang.String" value="?"/>
           </Properties>
@@ -107,6 +119,9 @@
   </Layout>
   <SubComponents>
     <Container class="javax.swing.JTabbedPane" name="Tabs">
+      <Events>
+        <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="TabsMouseClicked"/>
+      </Events>
 
       <Layout class="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout"/>
       <SubComponents>
@@ -159,7 +174,7 @@
                 <Component class="javax.swing.JTable" name="JTable_Formations">
                   <Properties>
                     <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                      <Connection code="formModel" type="code"/>
+                      <Connection code="formTableModel" type="code"/>
                     </Property>
                     <Property name="columnModel" type="javax.swing.table.TableColumnModel" editor="org.netbeans.modules.form.editors2.TableColumnModelEditor">
                       <TableColumnModel selectionModel="0"/>
@@ -385,7 +400,7 @@
                 <Component class="javax.swing.JTable" name="jTable_Stagiaires">
                   <Properties>
                     <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                      <Connection code="stgtblmod" type="code"/>
+                      <Connection code="stgTableModel" type="code"/>
                     </Property>
                     <Property name="columnModel" type="javax.swing.table.TableColumnModel" editor="org.netbeans.modules.form.editors2.TableColumnModelEditor">
                       <TableColumnModel selectionModel="0"/>
@@ -576,8 +591,7 @@
                     </Component>
                     <Component class="javax.swing.JLabel" name="jLabel5">
                       <Properties>
-                        <Property name="text" type="java.lang.String" value="jLabel5"/>
-                        <Property name="enabled" type="boolean" value="false"/>
+                        <Property name="text" type="java.lang.String" value="Gestion stagiaire"/>
                       </Properties>
                     </Component>
                   </SubComponents>
@@ -621,7 +635,6 @@
                     <Component class="javax.swing.JLabel" name="jLabel4">
                       <Properties>
                         <Property name="text" type="java.lang.String" value="R&#xe9;sultats ECF"/>
-                        <Property name="enabled" type="boolean" value="false"/>
                       </Properties>
                     </Component>
                     <Container class="javax.swing.JScrollPane" name="jScrollPane2">
@@ -634,7 +647,7 @@
                         <Component class="javax.swing.JList" name="jList_ECF_From_Formation">
                           <Properties>
                             <Property name="model" type="javax.swing.ListModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                              <Connection code="dlm" type="code"/>
+                              <Connection code="ECFListModel" type="code"/>
                             </Property>
                           </Properties>
                           <AuxValues>

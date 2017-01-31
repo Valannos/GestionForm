@@ -28,11 +28,11 @@ import javax.swing.event.ListSelectionListener;
  * @author vanel
  */
 public class MainWindow extends javax.swing.JFrame {
-
-    StagiaireTableModel stgtblmod = new StagiaireTableModel();
-    ECFListModel dlm = new ECFListModel();
+    
+    StagiaireTableModel stgTableModel = new StagiaireTableModel();
+    ECFListModel ECFListModel = new ECFListModel();
     Formation selectedFormation;
-    FormationModel formModel = new FormationModel();
+    FormationModel formTableModel = new FormationModel();
 
     /**
      * Creates new form MainWindow
@@ -42,75 +42,69 @@ public class MainWindow extends javax.swing.JFrame {
         this.setSize(500, 500);
         this.setLocationRelativeTo(null);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
+        
         initComponents();
-        List<Formation> findAllForm = FormationDAO.findAll();
-        for (Formation form : findAllForm) {
-
-            jComboBox_formation.addItem(form);
-
-        }
-        jComboBox_formation.setSelectedIndex(-1);
+        
         jTable_Stagiaires.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
                 if (!e.getValueIsAdjusting()) {//This line prevents double events
                     if (jTable_Stagiaires.getSelectedRow() > -1) {
-
-                        dlm.clear();
-
-                        Stagiaire stg = stgtblmod.getStagiaire(jTable_Stagiaires.getSelectedRow());
-
+                        
+                        ECFListModel.clear();
+                        
+                        Stagiaire stg = stgTableModel.getStagiaire(jTable_Stagiaires.getSelectedRow());
+                        
                         jButton_edit_stagiaire.setEnabled(true);
                         jButton_suppres_stagiaire.setEnabled(true);
                         jList_ECF_From_Formation.setEnabled(true);
                         List<ECF> ecf = ECFDAO.findAllinFormation(stg.getForm());
-                        dlm.addECFList(ecf);
+                        ECFListModel.addECFList(ecf);
                         jList_ECF_From_Formation.setSelectedIndex(-1);
-
+                        
                     }
                 }
             }
-
+            
         });
         jList_ECF_formations_tab.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
-
+                
                 if (jList_ECF_formations_tab.getSelectedIndex() > -1) {
                     jButton_Edit_ECF.setEnabled(true);
                     jButton_Delete_ECF.setEnabled(true);
                     int index = jList_ECF_formations_tab.getSelectedIndex();
-
-                    ECF currentECF = dlm.getECF(index);
-
+                    
+                    ECF currentECF = ECFListModel.getECF(index);
+                    
                     jTextField_ECF_Description.setText(currentECF.getDescription());
-
+                    
                 } else {
                     jTextField_ECF_Description.setText("Selectionnez un ECF.");
                 }
-
+                
             }
         });
-
+        
         jList_ECF_From_Formation.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
                 if (jList_ECF_From_Formation.getSelectedIndex() > -1) {
-
+                    
                     if (!e.getValueIsAdjusting()) {//This line prevents double events
 
                         if (jToggleButton_Valid_ECF.isEnabled()) {
                             jToggleButton_Valid_ECF.setEnabled(false);
                         }
-
-                        Stagiaire stg = stgtblmod.getStagiaire(jTable_Stagiaires.getSelectedRow());
-
+                        
+                        Stagiaire stg = stgTableModel.getStagiaire(jTable_Stagiaires.getSelectedRow());
+                        
                         System.out.print(jList_ECF_From_Formation.getSelectedIndex());
                         System.out.println((ECF) jList_ECF_From_Formation.getSelectedValue());
-
+                        
                         Resultat rslt = ResultatDAO.getResultatinECF(stg, (ECF) jList_ECF_From_Formation.getSelectedValue());
-
+                        
                         if (!rslt.isValide()) {
                             jToggleButton_Valid_ECF.setEnabled(true);
                         }
@@ -124,40 +118,40 @@ public class MainWindow extends javax.swing.JFrame {
                 //      selectedFormation = formModel.getFormation(JTable_Formations.getSelectedRow());
 
                 int input = JOptionPane.showConfirmDialog(jList_ECF_From_Formation, "Attention, la validation d'un ECF est irréversible ! Confirmez ?", "Confirmation", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
-
+                
                 if (input == JOptionPane.YES_OPTION) {
-
-                    Stagiaire stg = stgtblmod.getStagiaire(jTable_Stagiaires.getSelectedRow());
-
+                    
+                    Stagiaire stg = stgTableModel.getStagiaire(jTable_Stagiaires.getSelectedRow());
+                    
                     Resultat rslt = ResultatDAO.getResultatinECF(stg, (ECF) jList_ECF_From_Formation.getSelectedValue());
-
+                    
                     ResultatDAO.switchResultToValidated(rslt);
-
+                    
                     jToggleButton_Valid_ECF.setEnabled(false);
-
+                    
                 }
-
+                
             }
         });
         JTable_Formations.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
-
+                
                 if (JTable_Formations.getSelectedRow() > -1) {
                     if (!e.getValueIsAdjusting()) {//This line prevents double events
-                        selectedFormation = formModel.getFormation(JTable_Formations.getSelectedRow());
-
-                        dlm.clear();
-
+                        selectedFormation = formTableModel.getFormation(JTable_Formations.getSelectedRow());
+                        
+                        ECFListModel.clear();
+                        
                         jList_ECF_From_Formation.setEnabled(true);
                         List<ECF> ecf = ECFDAO.findAllinFormation(selectedFormation);
-
-                        dlm.addECFList(ecf);
+                        
+                        ECFListModel.addECFList(ecf);
                         jList_ECF_From_Formation.setSelectedIndex(-1);
                         JButton_Edit_Formation.setEnabled(true);
                         jButton_Delete_Formation.setEnabled(true);
                         jButton_Add_ECF.setEnabled(true);
-                        jList_ECF_formations_tab.setModel(dlm);
+                        jList_ECF_formations_tab.setModel(ECFListModel);
                         jList_ECF_formations_tab.setEnabled(true);
                     }
                 }
@@ -214,18 +208,26 @@ public class MainWindow extends javax.swing.JFrame {
         jList_ECF_From_Formation = new javax.swing.JList();
         jToggleButton_Valid_ECF = new javax.swing.JToggleButton();
         jMenuBar1 = new javax.swing.JMenuBar();
-        jMenu1 = new javax.swing.JMenu();
+        jMenu_File = new javax.swing.JMenu();
         jMenuItem_Add_Formation = new javax.swing.JMenuItem();
         jMenuItem_Add_ECF = new javax.swing.JMenuItem();
         jSeparator1 = new javax.swing.JPopupMenu.Separator();
         jMenuItem_Quit = new javax.swing.JMenuItem();
-        jMenu3 = new javax.swing.JMenu();
+        jMenu_Edit = new javax.swing.JMenu();
         jMenuItem_Edit_Formation = new javax.swing.JMenuItem();
-        jMenu2 = new javax.swing.JMenu();
+        jMenu_Rapport = new javax.swing.JMenu();
+        jMenuItem_Rapport_Formations = new javax.swing.JMenuItem();
+        jMenu_Help = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        JTable_Formations.setModel(formModel);
+        Tabs.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                TabsMouseClicked(evt);
+            }
+        });
+
+        JTable_Formations.setModel(formTableModel);
         JTable_Formations.addComponentListener(new java.awt.event.ComponentAdapter() {
             public void componentShown(java.awt.event.ComponentEvent evt) {
                 JTable_FormationsComponentShown(evt);
@@ -267,12 +269,12 @@ public class MainWindow extends javax.swing.JFrame {
         jButton_Delete_Formation.setText("Supprimer Formation");
         jButton_Delete_Formation.setEnabled(false);
         jButton_Delete_Formation.addAncestorListener(new javax.swing.event.AncestorListener() {
+            public void ancestorMoved(javax.swing.event.AncestorEvent evt) {
+            }
             public void ancestorAdded(javax.swing.event.AncestorEvent evt) {
                 jButton_Delete_FormationAncestorAdded(evt);
             }
             public void ancestorRemoved(javax.swing.event.AncestorEvent evt) {
-            }
-            public void ancestorMoved(javax.swing.event.AncestorEvent evt) {
             }
         });
         jButton_Delete_Formation.addActionListener(new java.awt.event.ActionListener() {
@@ -284,12 +286,12 @@ public class MainWindow extends javax.swing.JFrame {
         jButton_Delete_ECF.setText("Supprimer ECF");
         jButton_Delete_ECF.setEnabled(false);
         jButton_Delete_ECF.addAncestorListener(new javax.swing.event.AncestorListener() {
+            public void ancestorMoved(javax.swing.event.AncestorEvent evt) {
+            }
             public void ancestorAdded(javax.swing.event.AncestorEvent evt) {
                 jButton_Delete_ECFAncestorAdded(evt);
             }
             public void ancestorRemoved(javax.swing.event.AncestorEvent evt) {
-            }
-            public void ancestorMoved(javax.swing.event.AncestorEvent evt) {
             }
         });
         jButton_Delete_ECF.addActionListener(new java.awt.event.ActionListener() {
@@ -395,7 +397,7 @@ public class MainWindow extends javax.swing.JFrame {
 
         Tabs.addTab("Formations", JPanel_Tab_Formations);
 
-        jTable_Stagiaires.setModel(stgtblmod);
+        jTable_Stagiaires.setModel(stgTableModel);
         jScrollPane_Stagiaire.setViewportView(jTable_Stagiaires);
 
         jLabel1.setText("Ajouter un stagiaire");
@@ -490,8 +492,7 @@ public class MainWindow extends javax.swing.JFrame {
             }
         });
 
-        jLabel5.setText("jLabel5");
-        jLabel5.setEnabled(false);
+        jLabel5.setText("Gestion stagiaire");
 
         javax.swing.GroupLayout jPanel_Stg_EditorLayout = new javax.swing.GroupLayout(jPanel_Stg_Editor);
         jPanel_Stg_Editor.setLayout(jPanel_Stg_EditorLayout);
@@ -520,9 +521,8 @@ public class MainWindow extends javax.swing.JFrame {
         jSplitPane_Stg_Manager.setLeftComponent(jPanel_Stg_Editor);
 
         jLabel4.setText("Résultats ECF");
-        jLabel4.setEnabled(false);
 
-        jList_ECF_From_Formation.setModel(dlm);
+        jList_ECF_From_Formation.setModel(ECFListModel);
         jScrollPane2.setViewportView(jList_ECF_From_Formation);
 
         jToggleButton_Valid_ECF.setText("Valider ECF");
@@ -578,7 +578,7 @@ public class MainWindow extends javax.swing.JFrame {
 
         Tabs.addTab("Stagiaires", JPanel_tab_Stagiaires);
 
-        jMenu1.setText("Fichier");
+        jMenu_File.setText("Fichier");
 
         jMenuItem_Add_Formation.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_N, java.awt.event.InputEvent.ALT_MASK));
         jMenuItem_Add_Formation.setText("Nouvelle formation");
@@ -587,11 +587,11 @@ public class MainWindow extends javax.swing.JFrame {
                 jMenuItem_Add_FormationActionPerformed(evt);
             }
         });
-        jMenu1.add(jMenuItem_Add_Formation);
+        jMenu_File.add(jMenuItem_Add_Formation);
 
         jMenuItem_Add_ECF.setText("Ajouter un ECF");
-        jMenu1.add(jMenuItem_Add_ECF);
-        jMenu1.add(jSeparator1);
+        jMenu_File.add(jMenuItem_Add_ECF);
+        jMenu_File.add(jSeparator1);
 
         jMenuItem_Quit.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Q, java.awt.event.InputEvent.ALT_MASK));
         jMenuItem_Quit.setText("Quitter");
@@ -600,11 +600,11 @@ public class MainWindow extends javax.swing.JFrame {
                 jMenuItem_QuitActionPerformed(evt);
             }
         });
-        jMenu1.add(jMenuItem_Quit);
+        jMenu_File.add(jMenuItem_Quit);
 
-        jMenuBar1.add(jMenu1);
+        jMenuBar1.add(jMenu_File);
 
-        jMenu3.setText("Edition");
+        jMenu_Edit.setText("Edition");
 
         jMenuItem_Edit_Formation.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_E, java.awt.event.InputEvent.ALT_MASK));
         jMenuItem_Edit_Formation.setText("Editer Formation");
@@ -613,12 +613,19 @@ public class MainWindow extends javax.swing.JFrame {
                 jMenuItem_Edit_FormationActionPerformed(evt);
             }
         });
-        jMenu3.add(jMenuItem_Edit_Formation);
+        jMenu_Edit.add(jMenuItem_Edit_Formation);
 
-        jMenuBar1.add(jMenu3);
+        jMenuBar1.add(jMenu_Edit);
 
-        jMenu2.setText("?");
-        jMenuBar1.add(jMenu2);
+        jMenu_Rapport.setText("Rapport");
+
+        jMenuItem_Rapport_Formations.setText("Créer un rapport des formations");
+        jMenu_Rapport.add(jMenuItem_Rapport_Formations);
+
+        jMenuBar1.add(jMenu_Rapport);
+
+        jMenu_Help.setText("?");
+        jMenuBar1.add(jMenu_Help);
 
         setJMenuBar(jMenuBar1);
 
@@ -644,8 +651,8 @@ public class MainWindow extends javax.swing.JFrame {
 
     private void JButton_Edit_FormationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JButton_Edit_FormationActionPerformed
         int index = JTable_Formations.getSelectedRow();
-        Formation form = formModel.getFormation(index);
-        FormationForm formular = new FormationForm(this, true, formModel, form);
+        Formation form = formTableModel.getFormation(index);
+        FormationForm formular = new FormationForm(this, true, formTableModel, form);
         formular.setVisible(true);
 
     }//GEN-LAST:event_JButton_Edit_FormationActionPerformed
@@ -675,71 +682,73 @@ public class MainWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_jComboBox_formationActionPerformed
 
     private void jButton_Add_StagiaireActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_Add_StagiaireActionPerformed
-
+        
         if (jComboBox_formation.getSelectedIndex() == -1 || jTextField_add_stagiaire_firstname.getText().isEmpty() || jTextField_add_stagiaire_name.getText().isEmpty()) {
-
+            
             JOptionPane.showMessageDialog(this, "Certains champs ne sont pas remplis", "Erreur", JOptionPane.ERROR_MESSAGE);
-
+            
         } else if (ECFDAO.findAllinFormation((Formation) jComboBox_formation.getSelectedItem()).isEmpty()) {
-
+            
             JOptionPane.showMessageDialog(this, "La formation ne contient pas d'ECF", "Erreur", JOptionPane.ERROR_MESSAGE);
-
+            
         } else {
-
+            
             if (StagiaireDAO.getStgByFormation((Formation) jComboBox_formation.getSelectedItem()).isEmpty()) {
-
+                
                 JOptionPane.showMessageDialog(this, "Attention ! Une fois le premier stagiaire ajouté, le nombre d'ECF ne sera plus modifiable", "Ajout d'un stagiaire", JOptionPane.WARNING_MESSAGE);
-
+                
             }
-
+            
             int input = JOptionPane.showConfirmDialog(this, "Confirmez vous l'ajout du stagiaire à la formation ?", "Confirmation", JOptionPane.YES_NO_OPTION);
-
+            
             if (input == JOptionPane.YES_OPTION) {
-
+                
                 Stagiaire stg = new Stagiaire((Formation) jComboBox_formation.getSelectedItem(), jTextField_add_stagiaire_name.getText(), jTextField_add_stagiaire_firstname.getText());
                 int stg_id = StagiaireDAO.AddStagiaire(stg);
-
+                
                 stg.setCodeStagiaire(stg_id);
-
+                
                 if (stg.getCodeStagiaire() > 0) {
-
+                    
                     List<ECF> listECF = ECFDAO.findAllinFormation(stg.getForm());
-
+                    
                     for (ECF ecf : listECF) {
                         ResultatDAO.initiateStagiaireResultat(stg, ecf);
                     }
-
+                    
                     JOptionPane.showMessageDialog(this, stg.getPrenom() + " " + stg.getNom() + " suit désormais la formation " + stg.getForm().getNom() + ".", "Information", JOptionPane.INFORMATION_MESSAGE);
                     clearForm_jPanel_Add_Stagiaire();
-                    stgtblmod.addStagiaire(stg);
-
+                    stgTableModel.addStagiaire(stg);
+                    
                 } else if (input == JOptionPane.NO_OPTION) {
-
+                    
                     clearForm_jPanel_Add_Stagiaire();
-
+                    
                 }
-
+                
             }
-
+            
         }
-
+        
 
     }//GEN-LAST:event_jButton_Add_StagiaireActionPerformed
 
     private void jButton_edit_stagiaireActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_edit_stagiaireActionPerformed
-        // TODO add your handling code here:
+        Stagiaire stg = stgTableModel.getStagiaire(jTable_Stagiaires.getSelectedRow());
+        StagiaireFormEdit stgFormEdit = new StagiaireFormEdit(this, true, stg, stgTableModel, jTable_Stagiaires.getSelectedRow());
+        stgFormEdit.setVisible(true);
     }//GEN-LAST:event_jButton_edit_stagiaireActionPerformed
 
     private void jButton_Add_ECFActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_Add_ECFActionPerformed
         if (!StagiaireDAO.getStgByFormation(selectedFormation).isEmpty()) {
             JOptionPane.showMessageDialog(jList_ECF_From_Formation, "Impossible de rajouter un ECF à une formation contenant un ou plusieurs stagiaire", "Erreur", JOptionPane.ERROR_MESSAGE);
         } else {
-
+            
             JOptionPane.showMessageDialog(this, "Une fois le premier stagiaire ajouté, il ne sera plus possible de rajouter des ECF", "Avertissement", JOptionPane.WARNING_MESSAGE);
-            ECFForm ecfform = new ECFForm(this, true, selectedFormation, dlm);
+            ECFForm ecfform = new ECFForm(this, true, selectedFormation, ECFListModel);
             ecfform.setVisible(true);
         }
-
+        
 
     }//GEN-LAST:event_jButton_Add_ECFActionPerformed
 
@@ -748,29 +757,39 @@ public class MainWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton_Delete_FormationAncestorAdded
 
     private void jButton_Delete_FormationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_Delete_FormationActionPerformed
-
+        
         int index = JTable_Formations.getSelectedRow();
-        Formation form = formModel.getFormation(index);
-
+        Formation form = formTableModel.getFormation(index);
+        
         if (!StagiaireDAO.getStgByFormation(form).isEmpty()) {
-
+            
             JOptionPane.showMessageDialog(jList_ECF_From_Formation, "Impossible de supprimer une formation dans laquelle des stagiaires sont inscrits", "Supression impossible", JOptionPane.ERROR_MESSAGE);
-
+            
         } else {
             int input = JOptionPane.showConfirmDialog(this, "Attention : la formation et les ECF associés seront supprimés définitivement.", "Confirmation", JOptionPane.YES_NO_OPTION);
             if (input == JOptionPane.OK_OPTION) {
-
-                if (FormationDAO.deleteFormation(form)) {
-
+                
+                    
+                
+                if (ECFDAO.deleteAllByFormation(form) && FormationDAO.deleteFormation(form)) {
+                    
                     JOptionPane.showMessageDialog(jList_ECF_From_Formation, "Formation supprimée avec succès", "Confirmation", JOptionPane.INFORMATION_MESSAGE);
                     JButton_Edit_Formation.setEnabled(false);
                     jButton_Delete_Formation.setEnabled(false);
-                    formModel.removeFormation(index);
-
+                    formTableModel.removeFormation(index);
+                    if (jButton_Add_ECF.isEnabled()) {
+                        jButton_Add_ECF.setEnabled(false);
+                    }
+                    
+                } else {
+                    
+                    
+                     JOptionPane.showMessageDialog(jList_ECF_From_Formation, "Erreur pendant la supression de la formation", "Supression impossible", JOptionPane.ERROR_MESSAGE);
+                    
                 }
             }
         }
-
+        
 
     }//GEN-LAST:event_jButton_Delete_FormationActionPerformed
 
@@ -779,62 +798,73 @@ public class MainWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton_Delete_ECFAncestorAdded
 
     private void jButton_Delete_ECFActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_Delete_ECFActionPerformed
-        ECF ecf = (ECF) dlm.get(jList_ECF_formations_tab.getSelectedIndex());
-
+        ECF ecf = (ECF) ECFListModel.get(jList_ECF_formations_tab.getSelectedIndex());
+        
         if (ECFDAO.deleteECF(ecf)) {
-
+            
             JOptionPane.showMessageDialog(jList_ECF_From_Formation, "ECF supprimé avec succès", "Confirmation", JOptionPane.INFORMATION_MESSAGE);
-            dlm.remove(jList_ECF_formations_tab.getSelectedIndex());
+            ECFListModel.remove(jList_ECF_formations_tab.getSelectedIndex());
             jList_ECF_formations_tab.setSelectedIndex(-1);
             jButton_Delete_ECF.setEnabled(false);
             jButton_Edit_ECF.setEnabled(false);
-
+            
         } else {
-
+            
             JOptionPane.showMessageDialog(jList_ECF_From_Formation, "Impossible de supprimer l'ECF", "Erreur", JOptionPane.ERROR_MESSAGE);
-
+            
         }
 
     }//GEN-LAST:event_jButton_Delete_ECFActionPerformed
 
     private void jButton_suppres_stagiaireActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_suppres_stagiaireActionPerformed
-
-        Stagiaire stg = stgtblmod.getStagiaire(jTable_Stagiaires.getSelectedRow());
-
+        
+        Stagiaire stg = stgTableModel.getStagiaire(jTable_Stagiaires.getSelectedRow());
+        
         if (StagiaireDAO.deleteStagiaire(stg)) {
             System.out.print(stg.getId());
             PersonneDAO.deletePersonneById(stg.getId());
             JOptionPane.showMessageDialog(jList_ECF_From_Formation, stg.getPrenom() + " " + stg.getNom() + " a retiré avec succès de la formation " + stg.getForm().getNom() + ".", "Confirmation", JOptionPane.INFORMATION_MESSAGE);
-            stgtblmod.removeStagiaire(jTable_Stagiaires.getSelectedRow());
+            stgTableModel.removeStagiaire(jTable_Stagiaires.getSelectedRow());
             jButton_edit_stagiaire.setEnabled(false);
             jButton_suppres_stagiaire.setEnabled(false);
-            dlm.clear();
-
+            ECFListModel.clear();
+            
         }
     }//GEN-LAST:event_jButton_suppres_stagiaireActionPerformed
 
     private void jButton_Edit_ECFActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_Edit_ECFActionPerformed
         int index = jList_ECF_formations_tab.getSelectedIndex();
-
-        ECFForm ecfForm = new ECFForm(this, true, selectedFormation, dlm, dlm.getECF(index), index);
+        
+        ECFForm ecfForm = new ECFForm(this, true, selectedFormation, ECFListModel, ECFListModel.getECF(index), index);
         
         ecfForm.setVisible(true);
 
     }//GEN-LAST:event_jButton_Edit_ECFActionPerformed
 
+    private void TabsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TabsMouseClicked
+        jComboBox_formation.removeAllItems();
+        List<Formation> findAllForm = FormationDAO.findAll();
+        for (Formation form : findAllForm) {
+            
+            jComboBox_formation.addItem(form);
+            
+        }
+        jComboBox_formation.setSelectedIndex(-1);
+    }//GEN-LAST:event_TabsMouseClicked
+    
     private void clearForm_jPanel_Add_Stagiaire() {
-
+        
         jTextField_add_stagiaire_firstname.setText(null);
         jTextField_add_stagiaire_name.setText(null);
         jComboBox_formation.setSelectedIndex(-1);
-
+        
     }
-
+    
     private void showFormationFormJDiag() {
-
-        FormationForm formationForm = new FormationForm(this, true, formModel);
+        
+        FormationForm formationForm = new FormationForm(this, true, formTableModel);
         formationForm.setVisible(true);
-
+        
     }
 
     /**
@@ -897,14 +927,16 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel6;
     private javax.swing.JList jList_ECF_From_Formation;
     private javax.swing.JList<String> jList_ECF_formations_tab;
-    private javax.swing.JMenu jMenu1;
-    private javax.swing.JMenu jMenu2;
-    private javax.swing.JMenu jMenu3;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem_Add_ECF;
     private javax.swing.JMenuItem jMenuItem_Add_Formation;
     private javax.swing.JMenuItem jMenuItem_Edit_Formation;
     private javax.swing.JMenuItem jMenuItem_Quit;
+    private javax.swing.JMenuItem jMenuItem_Rapport_Formations;
+    private javax.swing.JMenu jMenu_Edit;
+    private javax.swing.JMenu jMenu_File;
+    private javax.swing.JMenu jMenu_Help;
+    private javax.swing.JMenu jMenu_Rapport;
     private javax.swing.JPanel jPanel_Add_Stagiaire;
     private javax.swing.JPanel jPanel_Btns_Formations;
     private javax.swing.JPanel jPanel_ECF_Description;
