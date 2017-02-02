@@ -67,6 +67,9 @@
               <Properties>
                 <Property name="text" type="java.lang.String" value="Cr&#xe9;er un rapport des formations"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jMenuItem_Rapport_FormationsActionPerformed"/>
+              </Events>
             </MenuItem>
           </SubComponents>
         </Menu>

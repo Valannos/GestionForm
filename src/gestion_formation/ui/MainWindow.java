@@ -5,6 +5,7 @@
  */
 package gestion_formation.ui;
 
+import gestion_formation.model.DAO.DBConnect;
 import gestion_formation.model.DAO.ECFDAO;
 import gestion_formation.model.DAO.FormationDAO;
 import gestion_formation.model.DAO.PersonneDAO;
@@ -16,12 +17,22 @@ import gestion_formation.model.Resultat;
 import gestion_formation.model.Stagiaire;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.HashMap;
 import java.util.List;
-
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.util.JRLoader;
+
+
 
 /**
  *
@@ -620,6 +631,11 @@ public class MainWindow extends javax.swing.JFrame {
         jMenu_Rapport.setText("Rapport");
 
         jMenuItem_Rapport_Formations.setText("Créer un rapport des formations");
+        jMenuItem_Rapport_Formations.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem_Rapport_FormationsActionPerformed(evt);
+            }
+        });
         jMenu_Rapport.add(jMenuItem_Rapport_Formations);
 
         jMenuBar1.add(jMenu_Rapport);
@@ -851,6 +867,19 @@ public class MainWindow extends javax.swing.JFrame {
         }
         jComboBox_formation.setSelectedIndex(-1);
     }//GEN-LAST:event_TabsMouseClicked
+
+    private void jMenuItem_Rapport_FormationsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem_Rapport_FormationsActionPerformed
+      try {
+          
+          JasperReport formRep = (JasperReport) JRLoader.loadObject(getClass().getResource("/Formation.jasper"));
+          JasperPrint jasperPrint = JasperFillManager.fillReport(formRep, new HashMap<>(), DBConnect.gettingConnected());
+          JasperExportManager.exportReportToPdfFile(jasperPrint, "/home/vanel/Documents/toto.pdf");
+          
+          
+      } catch (JRException ex) {
+            Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_jMenuItem_Rapport_FormationsActionPerformed
     
     private void clearForm_jPanel_Add_Stagiaire() {
         
